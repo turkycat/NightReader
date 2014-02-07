@@ -13,7 +13,7 @@ public class MainActivity extends Activity
 		super.onCreate( savedInstanceState );
 		setContentView( R.layout.activity_main );
 		
-		//this is where we will resume next time yay!
+		//this is where we will resume next time yay!!
 	}
 
 	@Override
