@@ -1,8 +1,15 @@
 package mdc.collab.nightreader.activities;
 
+import java.util.ArrayList;
+
 import mdc.collab.nightreader.R;
 import android.app.Activity;
+import android.content.ContentUris;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 
@@ -16,6 +23,67 @@ public class MainActivity extends Activity
 		setContentView( R.layout.activity_main );
 		
 		//this is where we will resume next time yay!!
+		
+		ArrayList<SongInfo> allInfo = new ArrayList<SongInfo>();
+
+		Log.d("getAllSongs()", "Starting query...");
+		final Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+		final String[] cursor_cols = { MediaStore.Audio.Media._ID,
+				MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM,
+				MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.DATA,
+				MediaStore.Audio.Media.YEAR, MediaStore.Audio.Media.ALBUM_ID,
+				MediaStore.Audio.Media.DURATION };
+		
+		final String where = MediaStore.Audio.Media.IS_MUSIC + "=1";
+		final Cursor cursor = MainActivity.this.getContentResolver().query(uri, cursor_cols, where, null, null);
+		int count = 0;
+
+		while (cursor.moveToNext()) 
+		{
+			String artist = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST)).trim();
+			String album = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM)).trim();
+			String track = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE)).trim();
+			String data = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA));
+			String year = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.YEAR));
+			Long albumId = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID));
+			int duration = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION));
+			
+			Uri sArtworkUri = Uri.parse("content://media/external/audio/albumart");
+            Uri albumArtUri = ContentUris.withAppendedId(sArtworkUri, albumId);
+			
+			/*Bitmap bitmap = null;
+			
+            try 
+            {
+                bitmap = MediaStore.Images.Media.getBitmap(MainActivity.this.getContentResolver(), albumArtUri);
+                bitmap = Bitmap.createScaledBitmap(bitmap, 30, 30, true);
+            } 
+            catch (FileNotFoundException e) // Song has no album art!
+            {
+                e.printStackTrace();
+                //bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.audio_file);
+            } 
+            catch (IOException e) // Other exception
+            {
+                e.printStackTrace();
+            }*/
+            
+            
+            
+			
+			SongInfo info = new SongInfo();
+			info.rawPath = data;
+			info.artist = artist;
+			info.album = album;
+			info.title = track;
+			info.year = year;
+			info.albumArt = null;
+			//info.albumArtUri = albumArtUri;
+			
+			allInfo.add(info);
+			//publishProgress(++count, cursor.getCount());
+			
+		}
 	}
 
 	@Override
