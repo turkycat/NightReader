@@ -14,6 +14,9 @@ public class AudioFileInfo
 	@Override
 	public String toString()
 	{
-		return (title == null) ? "Unknown Audio File" : title;
+		if( title == null && artist == null ) return "Unknown Audio File";
+		else if( title == null ) return "Unknown Title - " + artist;
+		else if( artist == null ) return title + " - Unknown Artist";
+		return title + " - " + artist;
 	}
 }

@@ -15,7 +15,7 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" ></LinearLayout>
+        android:layout_weight="1" />
 
     
     <RelativeLayout
@@ -24,6 +24,7 @@
         android:layout_weight="2"
         android:layout_gravity="center" >
     <Button
+        android:id="@+id/LoadButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
@@ -32,6 +33,7 @@
         
     <ListView
         android:id="@+id/AudioView"
+        android:layout_below="@id/LoadButton"
         android:layout_width="match_parent"
         android:layout_height="match_parent" > 
         </ListView>
