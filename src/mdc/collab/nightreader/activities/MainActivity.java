@@ -3,6 +3,7 @@ package mdc.collab.nightreader.activities;
 import java.util.ArrayList;
 
 import mdc.collab.nightreader.R;
+import mdc.collab.nightreader.util.AudioFileInfo;
 import android.app.Activity;
 import android.content.ContentUris;
 import android.database.Cursor;
@@ -12,8 +13,6 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
 public class MainActivity extends Activity
 {
@@ -25,7 +24,7 @@ public class MainActivity extends Activity
 		setContentView( R.layout.activity_main );
 		
 		//begin detecting audio files with 
-		ArrayList<SongInfo> audioFiles = detectAudioFiles();
+		ArrayList<AudioFileInfo> audioFiles = detectAudioFiles();
 		populateListView( audioFiles );
 	}
 	
@@ -48,9 +47,9 @@ public class MainActivity extends Activity
 	
 	
 	
-	private ArrayList<SongInfo> detectAudioFiles()
+	private ArrayList<AudioFileInfo> detectAudioFiles()
 	{
-		ArrayList<SongInfo> allInfo = new ArrayList<SongInfo>();
+		ArrayList<AudioFileInfo> allInfo = new ArrayList<AudioFileInfo>();
 
 		Log.d("getAllSongs()", "Starting query...");
 		final Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
@@ -99,7 +98,7 @@ public class MainActivity extends Activity
             
             
 			
-			SongInfo info = new SongInfo();
+			AudioFileInfo info = new AudioFileInfo();
 			info.rawPath = data;
 			info.artist = artist;
 			info.album = album;
@@ -119,7 +118,7 @@ public class MainActivity extends Activity
 	/**
 	 * populates the list view with the titles of the given list of audio files
 	 */
-	private void populateListView( ArrayList<SongInfo> songs )
+	private void populateListView( ArrayList<AudioFileInfo> songs )
 	{
 		
 	}
