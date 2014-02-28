@@ -12,6 +12,8 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 public class MainActivity extends Activity
 {
@@ -22,8 +24,32 @@ public class MainActivity extends Activity
 		super.onCreate( savedInstanceState );
 		setContentView( R.layout.activity_main );
 		
-		//this is where we will resume next time yay!!
-		
+		//begin detecting audio files with 
+		ArrayList<SongInfo> audioFiles = detectAudioFiles();
+		populateListView( audioFiles );
+	}
+	
+
+	@Override
+	public boolean onCreateOptionsMenu( Menu menu )
+	{
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate( R.menu.main, menu );
+		return true;
+	}
+	
+	
+	public void OpenListView(View view)
+	{
+//		Intent intent = new Intent( MainActivity.this, GameActivity.class );
+//		startActivity( intent );
+	}
+	
+	
+	
+	
+	private ArrayList<SongInfo> detectAudioFiles()
+	{
 		ArrayList<SongInfo> allInfo = new ArrayList<SongInfo>();
 
 		Log.d("getAllSongs()", "Starting query...");
@@ -51,6 +77,8 @@ public class MainActivity extends Activity
 			Uri sArtworkUri = Uri.parse("content://media/external/audio/albumart");
             Uri albumArtUri = ContentUris.withAppendedId(sArtworkUri, albumId);
 			
+            //------------------------------album art code
+            
 			/*Bitmap bitmap = null;
 			
             try 
@@ -82,23 +110,18 @@ public class MainActivity extends Activity
 			
 			allInfo.add(info);
 			//publishProgress(++count, cursor.getCount());
-			
 		}
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu( Menu menu )
-	{
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate( R.menu.main, menu );
-		return true;
+		
+		return allInfo;
 	}
 	
 	
-	public void OpenListView(View view)
+	/**
+	 * populates the list view with the titles of the given list of audio files
+	 */
+	private void populateListView( ArrayList<SongInfo> songs )
 	{
-//		Intent intent = new Intent( MainActivity.this, GameActivity.class );
-//		startActivity( intent );
+		
 	}
 
 }

@@ -10,4 +10,10 @@ public class SongInfo
 	public String albumArtUri;
 	public String albumArt;
 	public int duration;
+	
+	@Override
+	public String toString()
+	{
+		return (title == null) ? "Unknown Audio File" : title;
+	}
 }
