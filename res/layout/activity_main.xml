@@ -30,13 +30,7 @@
         android:layout_centerHorizontal="true"
         android:onClick="OpenListView"
         android:text="@string/buttonText" />
-        
-    <ListView
-        android:id="@+id/AudioView"
-        android:layout_below="@id/LoadButton"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" > 
-        </ListView>
+    
         </RelativeLayout>
    
 
