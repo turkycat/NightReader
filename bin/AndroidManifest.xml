@@ -25,11 +25,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="mdc.collab.nightreader.ListActivity"
-            android:label="@string/title_activity_list" >
-        </activity>
-        <activity
-            android:name="mdc.collab.nightreader.ListViewActivity"
+            android:name="mdc.collab.nightreader.activities.ListViewActivity"
             android:label="@string/title_activity_list_view" >
         </activity>
     </application>
