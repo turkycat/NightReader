@@ -10,7 +10,7 @@
 
         
     <ListView
-        android:id="@+id/AudioView"
+        android:id="@+id/AudioListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" > 
         </ListView>

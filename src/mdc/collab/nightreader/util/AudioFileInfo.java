@@ -1,7 +1,10 @@
 package mdc.collab.nightreader.util;
 
+import android.net.Uri;
+
 public class AudioFileInfo
 {
+	public Uri uri;
 	public String rawPath;
 	public String artist;
 	public String album;

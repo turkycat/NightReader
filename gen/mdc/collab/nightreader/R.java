@@ -25,10 +25,12 @@ public final class R {
         public static final int ic_launcher=0x7f020001;
     }
     public static final class id {
-        public static final int AudioView=0x7f080000;
-        public static final int LoadButton=0x7f080002;
-        public static final int MainActivity_MenuText=0x7f080003;
-        public static final int action_settings=0x7f080004;
+        public static final int AudioListView=0x7f080000;
+        public static final int MainActivity_LoadButton=0x7f080003;
+        public static final int MainActivity_MenuText=0x7f080004;
+        public static final int MainActivity_ProgressBar=0x7f080005;
+        public static final int MainActivity_Title=0x7f080002;
+        public static final int action_settings=0x7f080006;
         public static final int filler=0x7f080001;
     }
     public static final class layout {
@@ -76,5 +78,6 @@ public final class R {
  All customizations that are NOT specific to a particular API-level can go here. 
          */
         public static final int AppTheme=0x7f060001;
+        public static final int ProgressBarTheme=0x7f060002;
     }
 }
