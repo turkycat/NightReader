@@ -8,6 +8,7 @@ import mdc.collab.nightreader.R;
 import mdc.collab.nightreader.util.AudioFileInfo;
 import android.app.Activity;
 import android.content.ContentUris;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,7 +21,6 @@ import android.widget.ListView;
 
 public class MainActivity extends Activity
 {
-
 	@Override
 	protected void onCreate( Bundle savedInstanceState )
 	{
@@ -43,10 +43,10 @@ public class MainActivity extends Activity
 	}
 	
 	
-	public void OpenListView(View view)
+	public void OpenListView( View view )
 	{
-//		Intent intent = new Intent( MainActivity.this, GameActivity.class );
-//		startActivity( intent );
+		Intent intent = new Intent( MainActivity.this, ListViewActivity.class );
+		startActivity( intent );
 	}
 	
 	
