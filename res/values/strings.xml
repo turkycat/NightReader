@@ -7,5 +7,6 @@
     <string name="title_activity_list">ListActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_list_view">ListViewActivity</string>
+    <string name="MainActivity_MenuTextString">boats n hoes</string>
 
 </resources>

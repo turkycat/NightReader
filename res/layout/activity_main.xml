@@ -25,13 +25,21 @@
         android:layout_gravity="center" >
     <Button
         android:id="@+id/LoadButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_centerHorizontal="true"
         android:onClick="OpenListView"
-        android:text="@string/buttonText" />
+        android:background="@drawable/eject" />
     
+    <TextView 
+        android:id="@+id/MainActivity_MenuText"
+        android:layout_below="@id/LoadButton"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="@string/MainActivity_MenuTextString"/>
         </RelativeLayout>
+        
    
 
 </LinearLayout>
