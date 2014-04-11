@@ -6,6 +6,7 @@ import java.util.Comparator;
 
 import mdc.collab.nightreader.R;
 import mdc.collab.nightreader.util.AudioFileInfo;
+import mdc.collab.nightreader.util.AudioFileInfoAdapter;
 import android.app.Activity;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -97,10 +98,12 @@ public class ListViewActivity extends Activity
 	 */
 	private void populateListView( ArrayList<AudioFileInfo> songs )
 	{
-		ArrayAdapter<AudioFileInfo> arrayAdapter = new ArrayAdapter<AudioFileInfo>(
-                this, 
-                android.R.layout.simple_list_item_1,
-                songs );
+//		ArrayAdapter<AudioFileInfo> arrayAdapter = new ArrayAdapter<AudioFileInfo>(
+//                this, 
+//                android.R.layout.simple_list_item_1,
+//                songs );
+		
+		AudioFileInfoAdapter arrayAdapter = new AudioFileInfoAdapter( getBaseContext(), songs );
 
         listView.setAdapter(arrayAdapter); 
 	}

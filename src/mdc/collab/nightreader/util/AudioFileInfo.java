@@ -22,4 +22,16 @@ public class AudioFileInfo
 		else if( artist == null ) return title + " - Unknown Artist";
 		return title + " - " + artist;
 	}
+	
+	
+	public String getSongTitle()
+	{
+		return title == null ? "Unknown Title" : title;
+	}
+	
+	
+	public String getArtistName()
+	{
+		return artist == null ? "Unknown Artist" : artist;
+	}
 }
