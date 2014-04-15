@@ -1,10 +1,9 @@
 package mdc.collab.nightreader.activities;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
 import mdc.collab.nightreader.R;
+import mdc.collab.nightreader.application.NightReader;
 import mdc.collab.nightreader.util.AudioFileInfo;
 import mdc.collab.nightreader.util.AudioFileInfoAdapter;
 import android.app.Activity;
@@ -19,6 +18,8 @@ import android.widget.ListView;
 public class ListViewActivity extends Activity
 {
 	private static final String TAG = "ListViewActivity";
+	
+	private static NightReader application;
 	private ArrayList<AudioFileInfo> audioFiles;
 	private ListView listView;
 	private int last = -1;
@@ -28,6 +29,8 @@ public class ListViewActivity extends Activity
 	{
 		super.onCreate( savedInstanceState );
 		setContentView( R.layout.activity_list_view );
+		
+		application = (NightReader) getApplication();
 		
 		listView = (ListView) findViewById( R.id.AudioListView );
 		listView.setClickable( true );
@@ -53,7 +56,6 @@ public class ListViewActivity extends Activity
 		
 		
 		audioFiles = MainActivity.getAudioFileList();
-		sortAudioFilesBySongTitle( audioFiles );
 		populateListView( audioFiles );
 	}
 	
@@ -68,27 +70,6 @@ public class ListViewActivity extends Activity
 	
 	
 	
-
-	
-	
-	
-	
-	/**
-	 * sorts the list of songs by name
-	 */
-	private void sortAudioFilesBySongTitle( ArrayList<AudioFileInfo> songs )
-	{
-		Collections.sort( songs, new Comparator<AudioFileInfo>(){
-			@Override
-			public int compare( AudioFileInfo lhs, AudioFileInfo rhs )
-			{
-				return lhs.title.compareTo( rhs.title );
-			}
-		});
-	}
-	
-	
-	
 	/**
 	 * populates the list view with the titles of the given list of audio files
 	 */
@@ -99,7 +80,7 @@ public class ListViewActivity extends Activity
 //                android.R.layout.simple_list_item_1,
 //                songs );
 		
-		AudioFileInfoAdapter arrayAdapter = new AudioFileInfoAdapter( getBaseContext(), songs );
+		AudioFileInfoAdapter arrayAdapter = new AudioFileInfoAdapter( application, songs );
 
         listView.setAdapter(arrayAdapter); 
 	}

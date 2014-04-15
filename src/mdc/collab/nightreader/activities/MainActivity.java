@@ -20,6 +20,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -33,6 +34,7 @@ public class MainActivity extends Activity
 	private static MediaPlayer mediaPlayer;
 	private ProgressBar progressBar;
 	private TextView infoText; 
+	private Button loadButton;
 	
 	
 	@Override
@@ -55,13 +57,21 @@ public class MainActivity extends Activity
 		title.setTypeface( font );
 		infoText.setTypeface( font );
 		
+		loadButton = (Button) findViewById( R.id.MainActivity_LoadButton );
+		
 		//initialize the progress bar
 		progressBar = (ProgressBar) findViewById( R.id.MainActivity_ProgressBar );
-		//progressBar.
 		
 		//begin detecting audio files with an async task
-		loader = new ASyncSongLoader();
-		loader.execute();
+		if( application.isAudioFileListLoaded() )
+		{
+			loadButton.setEnabled( true );
+		}
+		else
+		{
+			loader = new ASyncSongLoader();
+			loader.execute();
+		}
 	}
 	
 
@@ -121,6 +131,10 @@ public class MainActivity extends Activity
 	
 	
 	
+
+	
+	
+	
 	private class ASyncSongLoader extends AsyncTask<Void, Integer, ArrayList<AudioFileInfo>>
 	{
 		private static final String TAG = "ASyncSongLoader";
@@ -152,9 +166,11 @@ public class MainActivity extends Activity
 		@Override
 		protected void onPostExecute( ArrayList<AudioFileInfo> result )
 		{
-			//Log.i( TAG, "onPostExecute " );
-			infoText.setText( "boats n hoes" );
 			super.onPostExecute( result );
+			
+			infoText.setText( "boats n hoes" );
+			application.setAudioFileList( result );
+			loadButton.setEnabled( true );
 		}
 		
 		/**
@@ -174,7 +190,7 @@ public class MainActivity extends Activity
 					MediaStore.Audio.Media.DURATION };
 			
 			final String where = MediaStore.Audio.Media.IS_MUSIC + "=1";
-			final Cursor cursor = MainActivity.this.getContentResolver().query(externalContent, cursor_cols, where, null, null);
+			final Cursor cursor = getContentResolver().query(externalContent, cursor_cols, where, null, null);
 			int count = 0;
 			final float totalFiles = (float) cursor.getCount();
 

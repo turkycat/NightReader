@@ -41,7 +41,8 @@
         android:layout_height="50dp"
         android:layout_centerHorizontal="true"
         android:onClick="OpenListView"
-        android:background="@drawable/eject" />
+        android:background="@drawable/eject"
+        android:enabled="false" />
     
     <TextView 
         android:id="@+id/MainActivity_MenuText"

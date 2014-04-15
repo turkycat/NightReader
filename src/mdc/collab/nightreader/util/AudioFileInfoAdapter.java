@@ -3,7 +3,7 @@ package mdc.collab.nightreader.util;
 import java.util.ArrayList;
 
 import mdc.collab.nightreader.R;
-import mdc.collab.nightreader.application.NightReader.Sorting;
+import mdc.collab.nightreader.application.NightReader;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,15 +13,15 @@ import android.widget.TextView;
 
 public class AudioFileInfoAdapter extends BaseAdapter
 {
+	private static NightReader application;
 	private ArrayList<AudioFileInfo> audioFiles;
 	private LayoutInflater mInflater;
-	private Sorting sortedBy;
 
-	public AudioFileInfoAdapter( Context context, ArrayList<AudioFileInfo> results )
+	public AudioFileInfoAdapter( NightReader app, ArrayList<AudioFileInfo> results )
 	{
+		application = app;
 		this.audioFiles = results;
-		this.mInflater = LayoutInflater.from( context );
-		this.sortedBy = Sorting.SONG;
+		this.mInflater = LayoutInflater.from( application.getApplicationContext() );
 	}
 
 	@Override
@@ -94,7 +94,7 @@ public class AudioFileInfoAdapter extends BaseAdapter
 		if( position < 0 || position >= audioFiles.size() ) return "Unknown";
 
 		AudioFileInfo requestedFile = audioFiles.get( position );
-		switch( sortedBy )
+		switch( application.getSorting() )
 		{
 		case SONG:
 			return requestedFile.getSongTitle();
