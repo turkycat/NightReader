@@ -14,8 +14,8 @@ public final class R {
         public static final int CustomBlue=0x7f070000;
     }
     public static final class dimen {
-        public static final int ArtistNameSize=0x7f040003;
-        public static final int SongTitleSize=0x7f040002;
+        public static final int SubtitleSize=0x7f040003;
+        public static final int TitleSize=0x7f040002;
         /**  Default screen margins, per the Android Design guidelines. 
 
          Customize dimensions originally defined in res/values/dimens.xml (such as
@@ -36,7 +36,6 @@ public final class R {
     public static final class id {
         public static final int AlbumNameButton=0x7f090003;
         public static final int ArtistNameButton=0x7f090002;
-        public static final int ArtistNameView=0x7f09000c;
         public static final int AudioListView=0x7f090005;
         public static final int ButtonLayout=0x7f090000;
         public static final int GenreNameButton=0x7f090004;
@@ -44,15 +43,17 @@ public final class R {
         public static final int MainActivity_MenuText=0x7f090009;
         public static final int MainActivity_ProgressBar=0x7f09000a;
         public static final int MainActivity_Title=0x7f090007;
+        public static final int Separator=0x7f09000b;
         public static final int SongTitleButton=0x7f090001;
-        public static final int SongTitleView=0x7f09000b;
-        public static final int action_settings=0x7f09000d;
+        public static final int Subtitle=0x7f09000d;
+        public static final int Title=0x7f09000c;
+        public static final int action_settings=0x7f09000e;
         public static final int filler=0x7f090006;
     }
     public static final class layout {
         public static final int activity_list_view=0x7f030000;
         public static final int activity_main=0x7f030001;
-        public static final int audio_file_view=0x7f030002;
+        public static final int audio_file_item_view=0x7f030002;
     }
     public static final class menu {
         public static final int list=0x7f080000;
