@@ -1,19 +1,16 @@
 package mdc.collab.nightreader.activities;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import mdc.collab.nightreader.R;
+import mdc.collab.nightreader.application.NightReader;
 import mdc.collab.nightreader.util.AudioFileInfo;
 import android.app.Activity;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -30,6 +27,7 @@ public class MainActivity extends Activity
 {
 	private static final String TAG = "MainActivity";
 	
+	private static NightReader application;
 	private static Context applicationContext;
 	private static ASyncSongLoader loader;
 	private static MediaPlayer mediaPlayer;
@@ -43,17 +41,19 @@ public class MainActivity extends Activity
 		super.onCreate( savedInstanceState );
 		setContentView( R.layout.activity_main );
 		
+		application = (NightReader) getApplication();
+		
 		//set the context for later use
 		applicationContext = getApplicationContext();
 		
-		//initialize the font to be used
-		Typeface type = Typeface.createFromAsset( getAssets(), "fonts/MAYBE MAYBE NOT.TTF" );
+		//retrieve the application's custom font by calling a special function of the NightReader class
+		Typeface font = application.getApplicationTypeface();
 		
 		//get a reference to the inflated TextView objects and set their font
 		TextView title = (TextView) findViewById( R.id.MainActivity_Title );
-		title.setTypeface( type );
 		infoText = (TextView) findViewById( R.id.MainActivity_MenuText );
-		infoText.setTypeface( type );
+		title.setTypeface( font );
+		infoText.setTypeface( font );
 		
 		//initialize the progress bar
 		progressBar = (ProgressBar) findViewById( R.id.MainActivity_ProgressBar );
