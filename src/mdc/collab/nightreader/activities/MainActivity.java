@@ -1,5 +1,8 @@
 package mdc.collab.nightreader.activities;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
@@ -10,6 +13,7 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -131,7 +135,7 @@ public class MainActivity extends Activity
 		@Override
 		protected ArrayList<AudioFileInfo> doInBackground( Void... arg0 )
 		{
-			Log.i( TAG, "doInBackground " );
+			//Log.i( TAG, "doInBackground " );
 			return detectAudioFiles();
 		}
 		
@@ -140,7 +144,7 @@ public class MainActivity extends Activity
 		{
 			if( values[0] != null )
 			{
-				Log.i( TAG, "onProgressUpdate " + values[0] );
+				//Log.i( TAG, "onProgressUpdate " + values[0] );
 				progressBar.setProgress( (int) values[0] );
 			}
 		}
@@ -148,7 +152,7 @@ public class MainActivity extends Activity
 		@Override
 		protected void onPostExecute( ArrayList<AudioFileInfo> result )
 		{
-			Log.i( TAG, "onPostExecute " );
+			//Log.i( TAG, "onPostExecute " );
 			infoText.setText( "boats n hoes" );
 			super.onPostExecute( result );
 		}
@@ -192,22 +196,22 @@ public class MainActivity extends Activity
 				
 	            //------------------------------album art code
 	            
-				/*Bitmap bitmap = null;
-				
-	            try 
-	            {
-	                bitmap = MediaStore.Images.Media.getBitmap(MainActivity.this.getContentResolver(), albumArtUri);
-	                bitmap = Bitmap.createScaledBitmap(bitmap, 30, 30, true);
-	            } 
-	            catch (FileNotFoundException e) // Song has no album art!
-	            {
-	                e.printStackTrace();
-	                //bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.audio_file);
-	            } 
-	            catch (IOException e) // Other exception
-	            {
-	                e.printStackTrace();
-	            }*/
+//				Bitmap bitmap = null;
+//				
+//	            try 
+//	            {
+//	                bitmap = MediaStore.Images.Media.getBitmap(MainActivity.this.getContentResolver(), albumArtUri);
+//	                bitmap = Bitmap.createScaledBitmap(bitmap, 50, 50, true);
+//	            } 
+//	            catch (FileNotFoundException e) // Song has no album art!
+//	            {
+//	                e.printStackTrace();
+//	                //bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.audio_file);
+//	            } 
+//	            catch (IOException e) // Other exception
+//	            {
+//	                e.printStackTrace();
+//	            }
 	            
 	            
 	            
@@ -219,22 +223,14 @@ public class MainActivity extends Activity
 				info.album = album;
 				info.title = track;
 				info.year = year;
-				info.albumArt = null;
-				//info.albumArtUri = albumArtUri;
+				//info.albumArt = bitmap;
+				info.albumArtUri = albumArtUri;
 				
 				localList.add(info);
 				
 				//this AsyncTask method will invoke onProgressUpdate on the UI thread
 				int percentage = (int)( ( ++count / totalFiles ) * 100 );
 				publishProgress( percentage );
-				try
-				{
-					Thread.sleep( 30 );
-				}
-				catch( InterruptedException e )
-				{
-					//do nothing
-				}
 			}
 			
 			return localList;

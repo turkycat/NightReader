@@ -2,13 +2,13 @@
 
     <!--
         Base application theme, dependent on API level. This theme is replaced
-        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
     -->
     <style name="AppBaseTheme" parent="android:Theme.Black.NoTitleBar.Fullscreen">
         <!--
             Theme customizations available in newer API levels can go in
             res/values-vXX/styles.xml, while customizations related to
-            backward-compatibility can go here.
+            backward-compatibility can go here.
         -->
     </style>
 
@@ -16,12 +16,16 @@
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
-    
-    <style name="ProgressBarTheme" parent="@android:style/Widget.ProgressBar.Horizontal">
-        
+
+    <style name="ProgressBarTheme" parent="@android:style/Widget.ProgressBar.Horizontal"></style>
+
+    <color name="CustomBlue">#00a4ff</color>
+
+    <style name="ButtonTheme" parent="AppBaseTheme">
+        <item name="android:layout_marginLeft">16dp</item>
+        <item name="android:layout_marginRight">16dp</item>
+        <item name="android:layout_width">50dp</item>
+        <item name="android:layout_height">50dp</item>
     </style>
-        
-    
-    <color name="SongTitleBlue">#00a4ff</color>
 
 </resources>

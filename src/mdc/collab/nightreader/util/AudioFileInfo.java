@@ -1,5 +1,8 @@
 package mdc.collab.nightreader.util;
 
+import java.net.URI;
+
+import android.graphics.Bitmap;
 import android.net.Uri;
 
 public class AudioFileInfo
@@ -10,8 +13,8 @@ public class AudioFileInfo
 	public String album;
 	public String title;
 	public String year;
-	public String albumArtUri;
-	public String albumArt;
+	public Uri albumArtUri;
+	public Bitmap albumArt;
 	public int duration;
 	
 	@Override

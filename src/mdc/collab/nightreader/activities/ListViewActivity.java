@@ -8,16 +8,12 @@ import mdc.collab.nightreader.R;
 import mdc.collab.nightreader.util.AudioFileInfo;
 import mdc.collab.nightreader.util.AudioFileInfoAdapter;
 import android.app.Activity;
-import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 public class ListViewActivity extends Activity
@@ -57,7 +53,7 @@ public class ListViewActivity extends Activity
 		
 		
 		audioFiles = MainActivity.getAudioFileList();
-		sortAudioFiles( audioFiles );
+		sortAudioFilesBySongTitle( audioFiles );
 		populateListView( audioFiles );
 	}
 	
@@ -80,7 +76,7 @@ public class ListViewActivity extends Activity
 	/**
 	 * sorts the list of songs by name
 	 */
-	private void sortAudioFiles( ArrayList<AudioFileInfo> songs )
+	private void sortAudioFilesBySongTitle( ArrayList<AudioFileInfo> songs )
 	{
 		Collections.sort( songs, new Comparator<AudioFileInfo>(){
 			@Override
