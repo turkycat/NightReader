@@ -55,8 +55,8 @@ public class ListViewActivity extends Activity
 		} );
 		
 		
-		audioFiles = MainActivity.getAudioFileList();
-		populateListView( audioFiles );
+		audioFiles = application.getAudioFileList();
+		populateListView();
 	}
 	
 
@@ -73,16 +73,22 @@ public class ListViewActivity extends Activity
 	/**
 	 * populates the list view with the titles of the given list of audio files
 	 */
-	private void populateListView( ArrayList<AudioFileInfo> songs )
+	private void populateListView()
 	{
 //		ArrayAdapter<AudioFileInfo> arrayAdapter = new ArrayAdapter<AudioFileInfo>(
 //                this, 
 //                android.R.layout.simple_list_item_1,
 //                songs );
 		
-		AudioFileInfoAdapter arrayAdapter = new AudioFileInfoAdapter( application, songs );
+		AudioFileInfoAdapter arrayAdapter = new AudioFileInfoAdapter( application, audioFiles );
 
         listView.setAdapter(arrayAdapter); 
 	}
 
+	
+	public void sortByArtist( View view )
+	{
+		application.sortAudioFilesByArtist();
+		populateListView();
+	}
 }

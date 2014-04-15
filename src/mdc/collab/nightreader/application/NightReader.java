@@ -104,4 +104,24 @@ public class NightReader extends Application
 		
 		sortedBy = Sorting.SONG;
 	}
+	
+	
+
+	/**
+	 * sorts the list of songs by name
+	 */
+	public void sortAudioFilesByArtist()
+	{
+		if( !isAudioFileListLoaded() ) return;
+		
+		Collections.sort( audioFiles, new Comparator<AudioFileInfo>(){
+			@Override
+			public int compare( AudioFileInfo lhs, AudioFileInfo rhs )
+			{
+				return lhs.getArtistName().compareTo( rhs.getArtistName() );
+			}
+		});
+		
+		sortedBy = Sorting.ARTIST;
+	}
 }

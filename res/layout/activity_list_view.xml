@@ -22,6 +22,7 @@
         <Button
             style="@style/ButtonTheme"
             android:id="@+id/ArtistNameButton"
+            android:onClick="sortByArtist"
             android:background="@drawable/microphone" />
 
         <Button

@@ -91,22 +91,22 @@ public class MainActivity extends Activity
 	}
 	
 	
-	public static ArrayList<AudioFileInfo> getAudioFileList()
-	{
-		try
-		{
-			return loader.get();
-		}
-		catch( InterruptedException e )
-		{
-			e.printStackTrace();
-		}
-		catch( ExecutionException e )
-		{
-			e.printStackTrace();
-		}
-		return null;
-	}
+//	public static ArrayList<AudioFileInfo> getAudioFileList()
+//	{
+//		try
+//		{
+//			return loader.get();
+//		}
+//		catch( InterruptedException e )
+//		{
+//			e.printStackTrace();
+//		}
+//		catch( ExecutionException e )
+//		{
+//			e.printStackTrace();
+//		}
+//		return null;
+//	}
 	
 	
 	
