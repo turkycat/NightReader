@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
 import android.widget.ListView;
 
 public class ListViewActivity extends Activity
@@ -72,12 +73,52 @@ public class ListViewActivity extends Activity
 	
 	
 	/**
+	 * re-applies the proper icons to the buttons across the top
+	 */
+	public void updateButtonIcons()
+	{
+		int song = R.drawable.notes;
+		int artist = R.drawable.microphone;
+		int album = R.drawable.record;
+		int genre = R.drawable.book;
+		
+		switch( application.getSorting() )
+		{
+		case SONG:
+			song = R.drawable.notes_select;
+			break;
+			
+		case ARTIST:
+			artist = R.drawable.microphone_select;
+			break;
+
+		case ALBUM:
+			album = R.drawable.record_select;
+			break;
+
+		case GENRE:
+			genre = R.drawable.book_select;
+			break;
+			
+		default:
+			break;
+		}
+
+		((Button) findViewById( R.id.SongTitleButton )).setBackgroundResource( song );
+		((Button) findViewById( R.id.ArtistNameButton )).setBackgroundResource( artist );
+		((Button) findViewById( R.id.AlbumNameButton )).setBackgroundResource( album );
+		((Button) findViewById( R.id.GenreNameButton )).setBackgroundResource( genre );
+	}
+	
+	
+	/**
 	 * populates the list view with the titles of the given list of audio files
 	 */
 	private void populateListView()
 	{
 		AudioFileInfoAdapter arrayAdapter = new AudioFileInfoAdapter( application );
-        listView.setAdapter(arrayAdapter); 
+        listView.setAdapter(arrayAdapter);
+        updateButtonIcons();
 	}
 
 
