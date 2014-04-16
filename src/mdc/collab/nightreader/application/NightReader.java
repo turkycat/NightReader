@@ -20,36 +20,30 @@ public class NightReader extends Application
 	private Typeface applicationFont;
 	private ArrayList<AudioFileInfo> audioFiles;
 	private Sorting sortedBy;
-	
+
 	public enum Sorting
 	{
-		NONE,
-		SONG,
-		ARTIST,
-		ALBUM,
-		GENRE,
+		NONE, SONG, ARTIST, ALBUM, GENRE,
 	};
-	
+
 	@Override
 	public void onCreate()
 	{
 		super.onCreate();
-		
+
 		applicationFont = Typeface.createFromAsset( getAssets(), "fonts/MAYBE MAYBE NOT.TTF" );
 		sortedBy = Sorting.NONE;
 	}
-	
-	
+
 	/**
 	 * sets the current application's audio file list to the given list
 	 */
 	public void setAudioFileList( ArrayList<AudioFileInfo> audioFiles )
 	{
 		this.audioFiles = audioFiles;
-		sortAudioFilesBySongTitle();
+		sortAudioFiles( Sorting.SONG );
 	}
-	
-	
+
 	/**
 	 * sets the current application's audio file list to the given list
 	 */
@@ -57,8 +51,7 @@ public class NightReader extends Application
 	{
 		return audioFiles;
 	}
-	
-	
+
 	/**
 	 * determines if the audio file list has already been loaded
 	 */
@@ -66,17 +59,16 @@ public class NightReader extends Application
 	{
 		return audioFiles != null;
 	}
-	
-	
+
 	/**
-	 * returns the Typeface used by this application for custom titles and other text items.
+	 * returns the Typeface used by this application for custom titles and other
+	 * text items.
 	 */
 	public Typeface getApplicationTypeface()
 	{
 		return applicationFont;
 	}
-	
-	
+
 	/**
 	 * returns the sorting type which the audio files are currently arranged by
 	 */
@@ -84,44 +76,89 @@ public class NightReader extends Application
 	{
 		return sortedBy;
 	}
-	
-	
 
 	/**
 	 * sorts the list of songs by name
 	 */
-	public void sortAudioFilesBySongTitle()
-	{
-		if( !isAudioFileListLoaded() ) return;
-		
-		Collections.sort( audioFiles, new Comparator<AudioFileInfo>(){
-			@Override
-			public int compare( AudioFileInfo lhs, AudioFileInfo rhs )
-			{
-				return lhs.getSongTitle().compareTo( rhs.getSongTitle() );
-			}
-		});
-		
-		sortedBy = Sorting.SONG;
-	}
-	
-	
+//	public void sortAudioFilesBySongTitle()
+//	{
+//		if( !isAudioFileListLoaded() ) return;
+//
+//		Collections.sort( audioFiles, new Comparator<AudioFileInfo>()
+//		{
+//			@Override
+//			public int compare( AudioFileInfo lhs, AudioFileInfo rhs )
+//			{
+//				return lhs.getSongTitle().compareTo( rhs.getSongTitle() );
+//			}
+//		} );
+//
+//		sortedBy = Sorting.SONG;
+//	}
 
 	/**
-	 * sorts the list of songs by name
+	 * sorts the list of songs given a requested sorting type
 	 */
-	public void sortAudioFilesByArtist()
+	public void sortAudioFiles( Sorting requestedSort )
 	{
 		if( !isAudioFileListLoaded() ) return;
-		
-		Collections.sort( audioFiles, new Comparator<AudioFileInfo>(){
-			@Override
-			public int compare( AudioFileInfo lhs, AudioFileInfo rhs )
+
+		Comparator<AudioFileInfo> sortingComparator;
+		switch( requestedSort )
+		{
+		default:
+			requestedSort = Sorting.SONG;
+			
+		case SONG:
+			sortingComparator = new Comparator<AudioFileInfo>()
 			{
-				return lhs.getArtistName().compareTo( rhs.getArtistName() );
-			}
-		});
-		
-		sortedBy = Sorting.ARTIST;
+				@Override
+				public int compare( AudioFileInfo lhs, AudioFileInfo rhs )
+				{
+					return lhs.getSongTitle().compareTo( rhs.getSongTitle() );
+				}
+			};
+			break;
+			
+
+		case ARTIST:
+			sortingComparator = new Comparator<AudioFileInfo>()
+			{
+				@Override
+				public int compare( AudioFileInfo lhs, AudioFileInfo rhs )
+				{
+					return lhs.getArtistName().compareTo( rhs.getArtistName() );
+				}
+			};
+			break;
+			
+
+		case ALBUM:
+			sortingComparator = new Comparator<AudioFileInfo>()
+			{
+				@Override
+				public int compare( AudioFileInfo lhs, AudioFileInfo rhs )
+				{
+					return lhs.getArtistName().compareTo( rhs.getArtistName() );
+				}
+			};
+			break;
+			
+
+		case GENRE:
+			sortingComparator = new Comparator<AudioFileInfo>()
+			{
+				@Override
+				public int compare( AudioFileInfo lhs, AudioFileInfo rhs )
+				{
+					return lhs.getGenre().compareTo( rhs.getGenre() );
+				}
+			};
+			break;			
+			
+		}
+
+		Collections.sort( audioFiles, sortingComparator );
+		sortedBy = requestedSort;
 	}
 }

@@ -17,10 +17,10 @@ public class AudioFileInfoAdapter extends BaseAdapter
 	private ArrayList<AudioFileInfo> audioFiles;
 	private LayoutInflater mInflater;
 
-	public AudioFileInfoAdapter( NightReader app, ArrayList<AudioFileInfo> results )
+	public AudioFileInfoAdapter( NightReader app)
 	{
 		application = app;
-		this.audioFiles = results;
+		this.audioFiles = application.getAudioFileList();
 		this.mInflater = LayoutInflater.from( application.getApplicationContext() );
 	}
 
@@ -103,10 +103,10 @@ public class AudioFileInfoAdapter extends BaseAdapter
 			return requestedFile.getArtistName();
 
 		case ALBUM:
-			return "Not Yet Implemented.";
+			return requestedFile.getAlbumName();
 
 		case GENRE:
-			return "Not Yet Implemented.";
+			return requestedFile.getGenre();
 		}
 		
 		return "Unknown";

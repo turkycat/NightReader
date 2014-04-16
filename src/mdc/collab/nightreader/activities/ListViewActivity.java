@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import mdc.collab.nightreader.R;
 import mdc.collab.nightreader.application.NightReader;
+import mdc.collab.nightreader.application.NightReader.Sorting;
 import mdc.collab.nightreader.util.AudioFileInfo;
 import mdc.collab.nightreader.util.AudioFileInfoAdapter;
 import android.app.Activity;
@@ -75,20 +76,50 @@ public class ListViewActivity extends Activity
 	 */
 	private void populateListView()
 	{
-//		ArrayAdapter<AudioFileInfo> arrayAdapter = new ArrayAdapter<AudioFileInfo>(
-//                this, 
-//                android.R.layout.simple_list_item_1,
-//                songs );
-		
-		AudioFileInfoAdapter arrayAdapter = new AudioFileInfoAdapter( application, audioFiles );
-
+		AudioFileInfoAdapter arrayAdapter = new AudioFileInfoAdapter( application );
         listView.setAdapter(arrayAdapter); 
 	}
 
-	
+
+
+	/**
+	 * the callback method for title sorting button
+	 */
+	public void sortByTitle( View view )
+	{
+		application.sortAudioFiles( Sorting.SONG );
+		populateListView();
+	}
+
+
+
+	/**
+	 * the callback method for artist sorting button
+	 */
 	public void sortByArtist( View view )
 	{
-		application.sortAudioFilesByArtist();
+		application.sortAudioFiles( Sorting.ARTIST );
+		populateListView();
+	}
+
+
+	/**
+	 * the callback method for album sorting button
+	 */
+	public void sortByAlbum( View view )
+	{
+		application.sortAudioFiles( Sorting.ALBUM );
+		populateListView();
+	}
+
+	
+	
+	/**
+	 * the callback method for genre sorting button
+	 */
+	public void sortByGenre( View view )
+	{
+		application.sortAudioFiles( Sorting.GENRE );
 		populateListView();
 	}
 }

@@ -13,6 +13,7 @@ public class AudioFileInfo
 	public String album;
 	public String title;
 	public String year;
+	public String genre;
 	public Uri albumArtUri;
 	public Bitmap albumArt;
 	public int duration;
@@ -36,5 +37,17 @@ public class AudioFileInfo
 	public String getArtistName()
 	{
 		return artist == null ? "Unknown Artist" : artist;
+	}
+	
+	
+	public String getAlbumName()
+	{
+		return album == null ? "Unknown Album" : album;
+	}
+	
+	
+	public String getGenre()
+	{
+		return genre == null ? "Unknown Genre" : genre;
 	}
 }

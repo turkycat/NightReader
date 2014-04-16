@@ -17,6 +17,7 @@
         <Button
             style="@style/ButtonTheme"
             android:id="@+id/SongTitleButton"
+            android:onClick="sortByTitle"
             android:background="@drawable/notes" />
 
         <Button
@@ -28,11 +29,13 @@
         <Button
             style="@style/ButtonTheme"
             android:id="@+id/AlbumNameButton"
+            android:onClick="sortByAlbum"
             android:background="@drawable/record" />
 
         <Button
             style="@style/ButtonTheme"
             android:id="@+id/GenreNameButton"
+            android:onClick="sortByGenre"
             android:background="@drawable/book" />
         
     </LinearLayout>
