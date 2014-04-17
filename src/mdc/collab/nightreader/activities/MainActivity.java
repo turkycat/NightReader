@@ -1,5 +1,9 @@
 package mdc.collab.nightreader.activities;
 
+/**
+ * @author Jesse Frush
+ */
+
 import java.util.ArrayList;
 
 import mdc.collab.nightreader.R;
@@ -35,7 +39,6 @@ public class MainActivity extends Activity implements SensorEventListener
 	private static NightReader application;
 	private static Context applicationContext;
 	private static ASyncSongLoader loader;
-	private static MediaPlayer mediaPlayer;
 	private ProgressBar progressBar;
 	private TextView infoText; 
 	private Button loadButton;
@@ -100,52 +103,11 @@ public class MainActivity extends Activity implements SensorEventListener
 	}
 	
 	
-//	public static ArrayList<AudioFileInfo> getAudioFileList()
-//	{
-//		try
-//		{
-//			return loader.get();
-//		}
-//		catch( InterruptedException e )
-//		{
-//			e.printStackTrace();
-//		}
-//		catch( ExecutionException e )
-//		{
-//			e.printStackTrace();
-//		}
-//		return null;
-//	}
-	
-	
 	
 	/**
-	 * will attempt to load and play the given Uri
+	 * An AsyncTask implementation responsible for loading the media information from the device running this application
+	 * @author Jesse Frush
 	 */
-	public static void playMedia( AudioFileInfo file )
-	{
-		if( file == null || file.uri == null ) return;
-		
-		stopMedia();
-		mediaPlayer = MediaPlayer.create( applicationContext, file.uri );
-		mediaPlayer.start();
-	}
-	
-	
-	/**
-	 * stops the active player, if necessary
-	 */
-	public static void stopMedia()
-	{
-		if( mediaPlayer != null ) mediaPlayer.stop();
-	}
-	
-	
-	
-
-	
-	
-	
 	private class ASyncSongLoader extends AsyncTask<Void, Integer, ArrayList<AudioFileInfo>>
 	{
 		private static final String TAG = "ASyncSongLoader";
@@ -299,6 +261,12 @@ public class MainActivity extends Activity implements SensorEventListener
 		//this should be the only event type we get callbacks for, but we will type check for safety
 		if( event.sensor.getType() == Sensor.TYPE_ACCELEROMETER )
 		{
+			double x, y, z;
+			
+			x = event.values[0];
+			y = event.values[1];
+			z = event.values[2];
+			
 			//more code here
 		}
 	}

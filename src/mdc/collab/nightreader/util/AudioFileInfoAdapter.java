@@ -1,5 +1,9 @@
 package mdc.collab.nightreader.util;
 
+/**
+ * @author Jesse Frush
+ */
+
 import java.util.ArrayList;
 
 import mdc.collab.nightreader.R;

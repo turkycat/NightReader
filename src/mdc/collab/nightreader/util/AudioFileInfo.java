@@ -1,5 +1,9 @@
 package mdc.collab.nightreader.util;
 
+/**
+ * @author Jesse Frush
+ */
+
 import java.net.URI;
 
 import android.graphics.Bitmap;

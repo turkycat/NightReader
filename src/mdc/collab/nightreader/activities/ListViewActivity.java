@@ -1,5 +1,9 @@
 package mdc.collab.nightreader.activities;
 
+/**
+ * @author Jesse Frush
+ */
+
 import java.util.ArrayList;
 
 import mdc.collab.nightreader.R;
@@ -46,12 +50,12 @@ public class ListViewActivity extends Activity
 				if( position == last )
 				{
 					last = -1;
-					MainActivity.stopMedia();
+					application.stopMedia();
 				}
 				else
 				{
 					last = position;
-					MainActivity.playMedia( audioFiles.get( position ) );
+					application.playMedia( audioFiles.get( position ) );
 					ListViewActivity.this.finish();
 				}
 			}

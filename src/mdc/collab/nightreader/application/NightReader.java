@@ -1,5 +1,9 @@
 package mdc.collab.nightreader.application;
 
+/**
+ * @author Jesse Frush
+ */
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -10,13 +14,18 @@ import android.app.Application;
 import android.content.ContentUris;
 import android.database.Cursor;
 import android.graphics.Typeface;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
+import android.text.GetChars;
 import android.util.Log;
 
 public class NightReader extends Application
 {
+	//a static reference to the MediaPlayer object that will be used to play media
+	private static MediaPlayer mediaPlayer;
+	
 	private Typeface applicationFont;
 	private ArrayList<AudioFileInfo> audioFiles;
 	private Sorting sortedBy;
@@ -26,6 +35,8 @@ public class NightReader extends Application
 		NONE, SONG, ARTIST, ALBUM, GENRE,
 	};
 
+	
+	
 	@Override
 	public void onCreate()
 	{
@@ -34,7 +45,32 @@ public class NightReader extends Application
 		applicationFont = Typeface.createFromAsset( getAssets(), "fonts/MAYBE MAYBE NOT.TTF" );
 		sortedBy = Sorting.NONE;
 	}
+	
 
+	
+	/**
+	 * will attempt to load and play the given Uri
+	 */
+	public void playMedia( AudioFileInfo file )
+	{
+		if( file == null || file.uri == null ) return;
+		
+		stopMedia();
+		mediaPlayer = MediaPlayer.create( getApplicationContext(), file.uri );
+		mediaPlayer.start();
+	}
+	
+	
+	/**
+	 * stops the active player, if necessary
+	 */
+	public void stopMedia()
+	{
+		if( mediaPlayer != null ) mediaPlayer.stop();
+	}
+
+	
+	
 	/**
 	 * sets the current application's audio file list to the given list
 	 */
@@ -44,6 +80,8 @@ public class NightReader extends Application
 		sortAudioFiles( Sorting.SONG );
 	}
 
+	
+	
 	/**
 	 * sets the current application's audio file list to the given list
 	 */
@@ -52,6 +90,8 @@ public class NightReader extends Application
 		return audioFiles;
 	}
 
+	
+	
 	/**
 	 * determines if the audio file list has already been loaded
 	 */
@@ -60,6 +100,8 @@ public class NightReader extends Application
 		return audioFiles != null;
 	}
 
+	
+	
 	/**
 	 * returns the Typeface used by this application for custom titles and other
 	 * text items.
@@ -69,6 +111,8 @@ public class NightReader extends Application
 		return applicationFont;
 	}
 
+	
+	
 	/**
 	 * returns the sorting type which the audio files are currently arranged by
 	 */
@@ -76,25 +120,9 @@ public class NightReader extends Application
 	{
 		return sortedBy;
 	}
-
-	/**
-	 * sorts the list of songs by name
-	 */
-//	public void sortAudioFilesBySongTitle()
-//	{
-//		if( !isAudioFileListLoaded() ) return;
-//
-//		Collections.sort( audioFiles, new Comparator<AudioFileInfo>()
-//		{
-//			@Override
-//			public int compare( AudioFileInfo lhs, AudioFileInfo rhs )
-//			{
-//				return lhs.getSongTitle().compareTo( rhs.getSongTitle() );
-//			}
-//		} );
-//
-//		sortedBy = Sorting.SONG;
-//	}
+	
+	
+	
 
 	/**
 	 * sorts the list of songs given a requested sorting type
