@@ -51,7 +51,8 @@ public class ListViewActivity extends Activity
 				else
 				{
 					last = position;
-					MainActivity.playMedia( audioFiles.get( position ).uri );
+					MainActivity.playMedia( audioFiles.get( position ) );
+					ListViewActivity.this.finish();
 				}
 			}
 		} );

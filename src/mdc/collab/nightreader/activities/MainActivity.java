@@ -1,17 +1,21 @@
 package mdc.collab.nightreader.activities;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
 import mdc.collab.nightreader.R;
 import mdc.collab.nightreader.application.NightReader;
 import mdc.collab.nightreader.util.AudioFileInfo;
 import android.app.Activity;
+import android.app.Service;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Typeface;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -24,7 +28,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-public class MainActivity extends Activity
+public class MainActivity extends Activity implements SensorEventListener
 {
 	private static final String TAG = "MainActivity";
 	
@@ -35,6 +39,9 @@ public class MainActivity extends Activity
 	private ProgressBar progressBar;
 	private TextView infoText; 
 	private Button loadButton;
+	
+	private SensorManager sensorManager;
+	private Sensor accelerometer;
 	
 	
 	@Override
@@ -72,6 +79,8 @@ public class MainActivity extends Activity
 			loader = new ASyncSongLoader();
 			loader.execute();
 		}
+		
+		initializeSensors();
 	}
 	
 
@@ -113,10 +122,12 @@ public class MainActivity extends Activity
 	/**
 	 * will attempt to load and play the given Uri
 	 */
-	public static void playMedia( Uri uri )
+	public static void playMedia( AudioFileInfo file )
 	{
+		if( file == null || file.uri == null ) return;
+		
 		stopMedia();
-		mediaPlayer = MediaPlayer.create( applicationContext, uri );
+		mediaPlayer = MediaPlayer.create( applicationContext, file.uri );
 		mediaPlayer.start();
 	}
 	
@@ -250,6 +261,45 @@ public class MainActivity extends Activity
 			}
 			
 			return localList;
+		}
+	}
+
+
+//------------------------------------------------sensor related methods
+	
+	
+	/**
+	 * initializes the sensors, currently just the accelerometer
+	 */
+	public void initializeSensors()
+	{
+		//grab a reference to the framework's pre-built sensor service object
+		sensorManager = (SensorManager) getSystemService( Service.SENSOR_SERVICE );
+		
+		//grab a reference to the Accelerometer, which is of type Sensor
+		accelerometer = sensorManager.getDefaultSensor( Sensor.TYPE_ACCELEROMETER );
+		
+		//register this class (implements SensorEventListener) to the SensorManager built into the framework.
+		sensorManager.registerListener( this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL );
+	}
+
+
+
+
+	@Override
+	public void onAccuracyChanged( Sensor arg0, int arg1 )
+	{
+		//nothing to do here
+	}
+
+
+	@Override
+	public void onSensorChanged( SensorEvent event )
+	{
+		//this should be the only event type we get callbacks for, but we will type check for safety
+		if( event.sensor.getType() == Sensor.TYPE_ACCELEROMETER )
+		{
+			//more code here
 		}
 	}
 
