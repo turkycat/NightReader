@@ -5,6 +5,7 @@ package mdc.collab.nightreader.activities;
  */
 
 import java.util.ArrayList;
+
 import mdc.collab.nightreader.R;
 import mdc.collab.nightreader.application.NightReader;
 import mdc.collab.nightreader.util.AudioFileInfo;
@@ -29,6 +30,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends Activity implements SensorEventListener
 {
@@ -58,11 +60,16 @@ public class MainActivity extends Activity implements SensorEventListener
 	//a reference to the button which starts the ListViewActivity to select music
 	private Button loadButton;
 	
+	//a reference to the sensor button which toggles the sensor
+	private Button sensorButton;
+	
 	//the sensor manager is used to initialize sensors
 	private SensorManager sensorManager;
 	
 	//the accelerometer is used to detect movement
 	private Sensor accelerometer;
+	
+	private boolean sensorEnabled;
 
 	
 	
@@ -98,6 +105,8 @@ public class MainActivity extends Activity implements SensorEventListener
 		
 		loadButton = (Button) findViewById( R.id.MainActivity_LoadButton );
 		
+		sensorButton = (Button) findViewById( R.id.MainActivity_SensorButton );
+		
 		//initialize the progress bar
 		progressBar = (ProgressBar) findViewById( R.id.MainActivity_ProgressBar );
 		progressBar.setProgressDrawable( getResources().getDrawable( R.drawable.main_progress_bar ) );
@@ -105,7 +114,7 @@ public class MainActivity extends Activity implements SensorEventListener
 		//begin detecting audio files with an async task
 		if( application.isAudioFileListLoaded() )
 		{
-			loadButton.setEnabled( true );
+			setEjectButtonEnabled( true );
 		}
 		else
 		{
@@ -126,11 +135,161 @@ public class MainActivity extends Activity implements SensorEventListener
 	}
 	
 	
-	public void OpenListView( View view )
+
+//-----------------------------------------------------accelerometer & other sensor related methods
+	
+	
+	
+	/**
+	 * initializes the sensors, currently just the accelerometer
+	 */
+	public void initializeSensors()
+	{
+		//grab a reference to the framework's pre-built sensor service object
+		sensorManager = (SensorManager) getSystemService( Service.SENSOR_SERVICE );
+		
+		//grab a reference to the Accelerometer, which is of type Sensor
+		accelerometer = sensorManager.getDefaultSensor( Sensor.TYPE_ACCELEROMETER );
+		
+		//register this class (implements SensorEventListener) to the SensorManager built into the framework.
+		sensorManager.registerListener( this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL );
+		
+		sensorEnabled = true;
+		sensorButton.setBackgroundResource( R.drawable.sensor_enabled );
+	}
+
+
+	
+	@Override
+	public void onAccuracyChanged( Sensor arg0, int arg1 )
+	{
+		//nothing to do here
+	}
+
+	
+	@Override
+	public void onSensorChanged( SensorEvent event )
+	{
+		//this should be the only event type we get callbacks for, but we will type check for safety
+		if( event.sensor.getType() == Sensor.TYPE_ACCELEROMETER )
+		{
+			float x, y, z;
+
+			//this method doesn't account for gravity, which essentially adds 9.81 m/s^2 when stationary, so less desirable.
+//			x = event.values[0];
+//			y = event.values[1];
+//			z = event.values[2];
+			
+			//from the Google high/low pass filter example:
+			
+			// In this example, alpha is calculated as t / (t + dT),
+			// where t is the low-pass filter's time-constant and
+			// dT is the event delivery rate.
+
+			final float alpha = 0.8f;
+
+			// Isolate the force of gravity with the low-pass filter.
+			gravity[0] = alpha * gravity[0] + ( 1 - alpha ) * event.values[0];
+			gravity[1] = alpha * gravity[1] + ( 1 - alpha ) * event.values[1];
+			gravity[2] = alpha * gravity[2] + ( 1 - alpha ) * event.values[2];
+			
+			//we can stop here if we aren't playing any music
+			if( !application.isMediaPlaying() ) return;
+
+			// Remove the gravity contribution with the high-pass filter.
+			x = event.values[0] - gravity[0];
+			y = event.values[1] - gravity[1];
+			z = event.values[2] - gravity[2];
+			
+			//the first method shows the innaccuracy
+			double magnitude = Math.sqrt( ( x * x ) + ( y * y ) + ( z * z ) );
+
+			long currentTime = System.currentTimeMillis();
+			Log.i(TAG, "mag: " + magnitude + " elapsed: " + ( currentTime - lastSignificantEvent ) );
+			//infoText.setText( "" + magnitude );
+			
+			if( magnitude > MOVEMENT_SIGNIFICANCE_THRESHOLD )
+			{
+				lastSignificantEvent = currentTime;
+			}
+			
+			
+			if( currentTime - lastSignificantEvent > AUDIO_CUTOFF_MILLIS )
+			{
+				application.stopMedia();
+				mainInfoText.setText( "Media paused" );
+			}
+		}
+	}
+	
+
+	//------------------------------------------------------------------callback methods from application and buttons
+	
+
+	/**
+	 * called when media is played, resumed, or selected.
+	 * 	This prevents the accelerometer event handler from automatically stopping the media when played
+	 */
+	public static void onMediaEvent()
+	{
+		lastSignificantEvent = System.currentTimeMillis();
+	}
+
+
+
+	
+	/**
+	 * opens the list view for song selection
+	 */
+	public void EjectButtonEvent( View view )
 	{
 		Intent intent = new Intent( MainActivity.this, ListViewActivity.class );
 		startActivity( intent );
 	}
+	
+	
+	
+	/**
+	 * toggles the sensor
+	 */
+	public void SensorButtonEvent( View view )
+	{
+		sensorEnabled = !sensorEnabled;
+		if( sensorEnabled )
+		{
+			sensorButton.setBackgroundResource( R.drawable.sensor_enabled );
+			Toast.makeText( getApplicationContext(), "sensor enabled", Toast.LENGTH_LONG ).show();
+		}
+		else
+		{
+			sensorButton.setBackgroundResource( R.drawable.sensor_disabled );
+			Toast.makeText( getApplicationContext(), "sensor disabled", Toast.LENGTH_LONG ).show();
+		}
+	}
+	
+	
+//----------------------------------------------------------------------private methods and classes
+	
+
+	
+	/**
+	 * enabled the eject button and applies the correct image
+	 */
+	private void setEjectButtonEnabled( boolean enabled )
+	{
+		loadButton.setEnabled( enabled );
+		if( enabled )
+		{
+			loadButton.setBackgroundResource( R.drawable.eject_enabled );
+			mainInfoText.setText( "select a file" );
+		}
+		else
+		{
+			loadButton.setBackgroundResource( R.drawable.eject );
+		}
+	}
+	
+	
 	
 	
 	
@@ -170,10 +329,8 @@ public class MainActivity extends Activity implements SensorEventListener
 		protected void onPostExecute( ArrayList<AudioFileInfo> result )
 		{
 			super.onPostExecute( result );
-			
-			mainInfoText.setText( "select a file" );
 			application.setAudioFileList( result );
-			loadButton.setEnabled( true );
+			setEjectButtonEnabled( true );
 		}
 		
 		/**
@@ -254,101 +411,6 @@ public class MainActivity extends Activity implements SensorEventListener
 			
 			return localList;
 		}
-	}
-
-
-//------------------------------------------------sensor related methods
-	
-	
-	
-	/**
-	 * initializes the sensors, currently just the accelerometer
-	 */
-	public void initializeSensors()
-	{
-		//grab a reference to the framework's pre-built sensor service object
-		sensorManager = (SensorManager) getSystemService( Service.SENSOR_SERVICE );
-		
-		//grab a reference to the Accelerometer, which is of type Sensor
-		accelerometer = sensorManager.getDefaultSensor( Sensor.TYPE_ACCELEROMETER );
-		
-		//register this class (implements SensorEventListener) to the SensorManager built into the framework.
-		sensorManager.registerListener( this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL );
-	}
-
-
-	
-	@Override
-	public void onAccuracyChanged( Sensor arg0, int arg1 )
-	{
-		//nothing to do here
-	}
-
-	
-	@Override
-	public void onSensorChanged( SensorEvent event )
-	{
-		//this should be the only event type we get callbacks for, but we will type check for safety
-		if( event.sensor.getType() == Sensor.TYPE_ACCELEROMETER )
-		{
-			float x, y, z;
-
-			//this method doesn't account for gravity, which essentially adds 9.81 m/s^2 when stationary, so less desirable.
-//			x = event.values[0];
-//			y = event.values[1];
-//			z = event.values[2];
-			
-			//from the Google high/low pass filter example:
-			
-			// In this example, alpha is calculated as t / (t + dT),
-			// where t is the low-pass filter's time-constant and
-			// dT is the event delivery rate.
-
-			final float alpha = 0.8f;
-
-			// Isolate the force of gravity with the low-pass filter.
-			gravity[0] = alpha * gravity[0] + ( 1 - alpha ) * event.values[0];
-			gravity[1] = alpha * gravity[1] + ( 1 - alpha ) * event.values[1];
-			gravity[2] = alpha * gravity[2] + ( 1 - alpha ) * event.values[2];
-			
-			//we can stop here if we aren't playing any music
-			if( !application.isMediaPlaying() ) return;
-
-			// Remove the gravity contribution with the high-pass filter.
-			x = event.values[0] - gravity[0];
-			y = event.values[1] - gravity[1];
-			z = event.values[2] - gravity[2];
-			
-			//the first method shows the innaccuracy
-			double magnitude = Math.sqrt( ( x * x ) + ( y * y ) + ( z * z ) );
-
-			long currentTime = System.currentTimeMillis();
-			Log.i(TAG, "mag: " + magnitude + " elapsed: " + ( currentTime - lastSignificantEvent ) );
-			//infoText.setText( "" + magnitude );
-			
-			if( magnitude > MOVEMENT_SIGNIFICANCE_THRESHOLD )
-			{
-				lastSignificantEvent = currentTime;
-			}
-			
-			
-			if( currentTime - lastSignificantEvent > AUDIO_CUTOFF_MILLIS )
-			{
-				application.stopMedia();
-				mainInfoText.setText( "Media paused" );
-			}
-		}
-	}
-	
-
-
-	/**
-	 * called when media is played, resumed, or selected.
-	 * 	This prevents the accelerometer event handler from automatically stopping the media when played
-	 */
-	public static void onMediaEvent()
-	{
-		lastSignificantEvent = System.currentTimeMillis();
 	}
 
 }
