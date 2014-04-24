@@ -229,6 +229,8 @@ public class MainActivity extends Activity implements SensorEventListener
 
 //------------------------------------------------sensor related methods
 	
+	//accounts for gravity
+	float[] gravity = new float[3];
 	
 	/**
 	 * initializes the sensors, currently just the accelerometer
@@ -262,12 +264,11 @@ public class MainActivity extends Activity implements SensorEventListener
 		if( event.sensor.getType() == Sensor.TYPE_ACCELEROMETER )
 		{
 			double x, y, z;
-			
+
+			//this method doesn't account for gravity, which essentially adds 9.81 m/s^2 when stationary, so less desirable.
 			x = event.values[0];
 			y = event.values[1];
 			z = event.values[2];
-			
-			//more code here
 		}
 	}
 
