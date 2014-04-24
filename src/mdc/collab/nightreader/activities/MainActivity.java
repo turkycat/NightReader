@@ -171,7 +171,7 @@ public class MainActivity extends Activity implements SensorEventListener
 		{
 			super.onPostExecute( result );
 			
-			mainInfoText.setText( "boats n hoes" );
+			mainInfoText.setText( "select a file" );
 			application.setAudioFileList( result );
 			loadButton.setEnabled( true );
 		}

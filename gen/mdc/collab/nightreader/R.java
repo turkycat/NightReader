@@ -29,14 +29,23 @@ public final class R {
         public static final int book=0x7f020000;
         public static final int book_select=0x7f020001;
         public static final int eject=0x7f020002;
-        public static final int ic_launcher=0x7f020003;
-        public static final int main_progress_bar=0x7f020004;
-        public static final int microphone=0x7f020005;
-        public static final int microphone_select=0x7f020006;
-        public static final int notes=0x7f020007;
-        public static final int notes_select=0x7f020008;
-        public static final int record=0x7f020009;
-        public static final int record_select=0x7f02000a;
+        public static final int eject_enabled=0x7f020003;
+        public static final int ic_launcher=0x7f020004;
+        public static final int main_progress_bar=0x7f020005;
+        public static final int microphone=0x7f020006;
+        public static final int microphone_select=0x7f020007;
+        public static final int notes=0x7f020008;
+        public static final int notes_select=0x7f020009;
+        public static final int pause=0x7f02000a;
+        public static final int pause_enabled=0x7f02000b;
+        public static final int play=0x7f02000c;
+        public static final int play_enabled=0x7f02000d;
+        public static final int record=0x7f02000e;
+        public static final int record_select=0x7f02000f;
+        public static final int sensor_disabled=0x7f020010;
+        public static final int sensor_enabled=0x7f020011;
+        public static final int stop=0x7f020012;
+        public static final int stop_enabled=0x7f020013;
     }
     public static final class id {
         public static final int AlbumNameButton=0x7f090003;
@@ -44,17 +53,23 @@ public final class R {
         public static final int AudioListView=0x7f090005;
         public static final int ButtonLayout=0x7f090000;
         public static final int GenreNameButton=0x7f090004;
-        public static final int MainActivity_LoadButton=0x7f090008;
-        public static final int MainActivity_MenuText=0x7f090009;
-        public static final int MainActivity_ProgressBar=0x7f09000a;
+        public static final int MainActivity_LoadButton=0x7f09000b;
+        public static final int MainActivity_MenuText=0x7f09000f;
+        public static final int MainActivity_PlayPauseButton=0x7f09000c;
+        public static final int MainActivity_ProgressBar=0x7f090010;
+        public static final int MainActivity_SensorButton=0x7f09000e;
+        public static final int MainActivity_StopButton=0x7f09000d;
         public static final int MainActivity_Title=0x7f090007;
-        public static final int Separator=0x7f09000b;
+        public static final int Separator=0x7f090011;
         public static final int SongTitleButton=0x7f090001;
-        public static final int Subtitle=0x7f09000d;
-        public static final int Title=0x7f09000c;
-        public static final int action_settings=0x7f09000f;
-        public static final int filler=0x7f090006;
-        public static final int progressStyle=0x7f09000e;
+        public static final int Subtitle=0x7f090013;
+        public static final int Title=0x7f090012;
+        public static final int action_settings=0x7f090015;
+        public static final int mainactivity_albumart=0x7f090009;
+        public static final int mainactivity_albumart_layout=0x7f090008;
+        public static final int mainactivity_control_layout=0x7f09000a;
+        public static final int mainactivity_title_layout=0x7f090006;
+        public static final int progressStyle=0x7f090014;
     }
     public static final class layout {
         public static final int activity_list_view=0x7f030000;
