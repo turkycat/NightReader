@@ -4,6 +4,8 @@ package mdc.collab.nightreader.activities;
  * @author Jesse Frush
  */
 
+import java.io.File;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 import mdc.collab.nightreader.R;
@@ -228,6 +230,9 @@ public class MainActivity extends Activity implements SensorEventListener
 
 //------------------------------------------------sensor related methods
 	
+	
+	
+	
 	//accounts for gravity
 	float[] gravity = new float[3];
 	
@@ -258,35 +263,49 @@ public class MainActivity extends Activity implements SensorEventListener
 	
 	private long lastSignificantTime = System.currentTimeMillis();
 	private static final double SIGNIFICANCE_THRESHOLD = 0.0;
-	private double lastFiveDeltas[] = new double[5];
-	private int currentIndex = 1;
 
 	
 	@Override
 	public void onSensorChanged( SensorEvent event )
 	{
-		if( !application.isMediaPlaying() ) return;
+		//if( !application.isMediaPlaying() ) return;
 		
 		//this should be the only event type we get callbacks for, but we will type check for safety
 		if( event.sensor.getType() == Sensor.TYPE_ACCELEROMETER )
 		{
-			double x, y, z;
+			float x, y, z;
 
 			//this method doesn't account for gravity, which essentially adds 9.81 m/s^2 when stationary, so less desirable.
-			x = event.values[0];
-			y = event.values[1];
-			z = event.values[2];
+//			x = event.values[0];
+//			y = event.values[1];
+//			z = event.values[2];
 			
-			//more code here
-			double magnitude = ( x * x ) + ( y * y ) + ( z * z );
-			magnitude = Math.sqrt( magnitude );
+			//from the Google high/low pass filter example:
 			
-			double delta = magnitude - lastFiveDeltas[currentIndex - 1];
-			lastFiveDeltas[ currentIndex++ % 5 ] = delta;
+			// In this example, alpha is calculated as t / (t + dT),
+			// where t is the low-pass filter's time-constant and
+			// dT is the event delivery rate.
+
+			final float alpha = 0.8f;
+
+			// Isolate the force of gravity with the low-pass filter.
+			gravity[0] = alpha * gravity[0] + ( 1 - alpha ) * event.values[0];
+			gravity[1] = alpha * gravity[1] + ( 1 - alpha ) * event.values[1];
+			gravity[2] = alpha * gravity[2] + ( 1 - alpha ) * event.values[2];
+
+			// Remove the gravity contribution with the high-pass filter.
+			x = event.values[0] - gravity[0];
+			y = event.values[1] - gravity[1];
+			z = event.values[2] - gravity[2];
 			
-			if( currentIndex < 5 ) return;
+			//the first method shows the innaccuracy
+			double magnitude = Math.sqrt( ( x * x ) + ( y * y ) + ( z * z ) );
+			
 			
 			Log.i(TAG, "" + magnitude);
+			//infoText.setText( "" + magnitude );
+			
+			
 		}
 	}
 
