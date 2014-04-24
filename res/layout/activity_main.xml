@@ -25,8 +25,6 @@
             android:text="@string/app_name"
             android:textColor="@color/CustomBlue"
             android:shadowColor="#ffffff"
-            android:shadowDx="1"
-            android:shadowDy="1"
             android:shadowRadius="1"
             android:textSize="40sp"
             android:textStyle="bold" />
@@ -53,7 +51,7 @@
         android:layout_weight="2" >
 
         <Button
-            android:id="@+id/MainActivity_LoadButton"
+            android:id="@+id/mainactivity_loadbutton"
             style="@style/ButtonTheme"
             android:layout_alignParentLeft="true"
             android:background="@drawable/eject"
@@ -61,25 +59,25 @@
             android:onClick="EjectButtonEvent" />
 
         <Button
-            android:id="@+id/MainActivity_PlayPauseButton"
+            android:id="@+id/mainactivity_playpausebutton"
             style="@style/ButtonTheme"
-            android:layout_toRightOf="@id/MainActivity_LoadButton"
+            android:layout_toRightOf="@id/mainactivity_loadbutton"
             android:background="@drawable/play"
             android:enabled="false"
             android:onClick="PlayPauseEvent" />
 
         <Button
-            android:id="@+id/MainActivity_StopButton"
+            android:id="@+id/mainactivity_stopbutton"
             style="@style/ButtonTheme"
-            android:layout_toRightOf="@id/MainActivity_PlayPauseButton"
+            android:layout_toRightOf="@id/mainactivity_playpausebutton"
             android:background="@drawable/stop"
             android:enabled="false"
             android:onClick="StopEvent" />
 
         <Button
-            android:id="@+id/MainActivity_SensorButton"
+            android:id="@+id/mainactivity_sensorbutton"
             style="@style/ButtonTheme"
-            android:layout_toRightOf="@id/MainActivity_StopButton"
+            android:layout_toRightOf="@id/mainactivity_stopbutton"
             android:background="@drawable/sensor_disabled"
             android:enabled="true"
             android:onClick="SensorButtonEvent" />
@@ -88,7 +86,7 @@
             android:id="@+id/MainActivity_MenuText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/MainActivity_LoadButton"
+            android:layout_below="@id/mainactivity_loadbutton"
             android:layout_centerHorizontal="true"
             android:shadowColor="#ffffff"
             android:shadowRadius="1"

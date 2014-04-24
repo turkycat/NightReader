@@ -4,6 +4,7 @@ package mdc.collab.nightreader.application;
  * @author Jesse Frush
  */
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -29,10 +30,16 @@ public class NightReader extends Application
 	private Typeface applicationFont;
 	private ArrayList<AudioFileInfo> audioFiles;
 	private Sorting sortedBy;
+	private MediaStatus status;
 
 	public enum Sorting
 	{
-		NONE, SONG, ARTIST, ALBUM, GENRE,
+		NONE, SONG, ARTIST, ALBUM, GENRE
+	};
+	
+	public enum MediaStatus
+	{
+		NONE, PLAYING, PAUSED, STOP
 	};
 
 	
@@ -44,6 +51,7 @@ public class NightReader extends Application
 
 		applicationFont = Typeface.createFromAsset( getAssets(), "fonts/MAYBE MAYBE NOT.TTF" );
 		sortedBy = Sorting.NONE;
+		status = MediaStatus.NONE;
 	}
 	
 
@@ -57,8 +65,9 @@ public class NightReader extends Application
 		
 		stopMedia();
 		mediaPlayer = MediaPlayer.create( getApplicationContext(), file.uri );
-		MainActivity.onMediaEvent();
+		MainActivity.onMediaEvent( MediaStatus.PLAYING );
 		mediaPlayer.start();
+		status = MediaStatus.PLAYING;
 	}
 	
 	
@@ -67,7 +76,12 @@ public class NightReader extends Application
 	 */
 	public void stopMedia()
 	{
-		if( mediaPlayer != null ) mediaPlayer.stop();
+		if( mediaPlayer != null )
+		{
+			mediaPlayer.stop();
+			MainActivity.onMediaEvent( MediaStatus.STOP );
+			status = MediaStatus.STOP;
+		}
 	}
 	
 	
@@ -78,13 +92,35 @@ public class NightReader extends Application
 	{
 		if( mediaPlayer != null )
 		{
-			if( mediaPlayer.isPlaying() )
+			if( mediaPlayer.isPlaying() && status == MediaStatus.PLAYING )
 			{
 				mediaPlayer.pause();
+				MainActivity.onMediaEvent( MediaStatus.PAUSED );
+				status = MediaStatus.PAUSED;
 			}
 			else
 			{
+				if( status == MediaStatus.STOP )
+				{
+					try
+					{
+						mediaPlayer.prepare();
+					}
+					catch( IllegalStateException e )
+					{
+						//do nothing
+						//e.printStackTrace();
+					}
+					catch( IOException e )
+					{
+						//do nothing
+						//e.printStackTrace();
+					}
+				}
+				mediaPlayer.seekTo( 0 );
 				mediaPlayer.start();
+				MainActivity.onMediaEvent( MediaStatus.PLAYING );
+				status = MediaStatus.PLAYING;
 			}
 		}
 	}

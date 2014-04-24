@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 import mdc.collab.nightreader.R;
 import mdc.collab.nightreader.application.NightReader;
+import mdc.collab.nightreader.application.NightReader.MediaStatus;
 import mdc.collab.nightreader.util.AudioFileInfo;
 import android.app.Activity;
 import android.app.Service;
@@ -45,6 +46,9 @@ public class MainActivity extends Activity implements SensorEventListener
 	//the threshold for what determines "significant" movement of the phone
 	private static final double MOVEMENT_SIGNIFICANCE_THRESHOLD = 0.5;
 	
+	//the time, in millis, of the last significant event detected
+	private static long lastSignificantEvent;
+	
 	//a reference to the application instance
 	private static NightReader application;
 	
@@ -52,32 +56,36 @@ public class MainActivity extends Activity implements SensorEventListener
 	private static ASyncSongLoader loader;
 	
 	//a reference to the view's progress bar
-	private ProgressBar progressBar;
+	private static ProgressBar progressBar;
 	
 	//a reference to the largest infotext
-	private TextView mainInfoText; 
+	private static TextView mainInfoText; 
 	
 	//a reference to the button which starts the ListViewActivity to select music
-	private Button loadButton;
+	private static Button loadButton;
+	
+	//a reference to the play/pause button
+	private static Button playButton;
+	
+	//a reference to the stop button
+	private static Button stopButton;
 	
 	//a reference to the sensor button which toggles the sensor
-	private Button sensorButton;
+	private static Button sensorButton;
 	
 	//the sensor manager is used to initialize sensors
-	private SensorManager sensorManager;
+	private static SensorManager sensorManager;
 	
 	//the accelerometer is used to detect movement
-	private Sensor accelerometer;
+	private static Sensor accelerometer;
 	
+	//the state of the sensor
 	private boolean sensorEnabled;
 
 	
 	
 	//accounts for gravity
 	float[] gravity;
-	
-	//the time, in millis, of the last significant event detected
-	private static long lastSignificantEvent;
 	
 	
 	@Override
@@ -103,9 +111,11 @@ public class MainActivity extends Activity implements SensorEventListener
 		title.setTypeface( font );
 		mainInfoText.setTypeface( font );
 		
-		loadButton = (Button) findViewById( R.id.MainActivity_LoadButton );
-		
-		sensorButton = (Button) findViewById( R.id.MainActivity_SensorButton );
+		//grab references to the four buttons on the screen
+		loadButton = (Button) findViewById( R.id.mainactivity_loadbutton );
+		sensorButton = (Button) findViewById( R.id.mainactivity_sensorbutton );
+		playButton = (Button) findViewById( R.id.mainactivity_playpausebutton );
+		stopButton = (Button) findViewById( R.id.mainactivity_stopbutton );
 		
 		//initialize the progress bar
 		progressBar = (ProgressBar) findViewById( R.id.MainActivity_ProgressBar );
@@ -170,6 +180,8 @@ public class MainActivity extends Activity implements SensorEventListener
 	@Override
 	public void onSensorChanged( SensorEvent event )
 	{
+		if( !sensorEnabled ) return;
+		
 		//this should be the only event type we get callbacks for, but we will type check for safety
 		if( event.sensor.getType() == Sensor.TYPE_ACCELEROMETER )
 		{
@@ -230,9 +242,32 @@ public class MainActivity extends Activity implements SensorEventListener
 	 * called when media is played, resumed, or selected.
 	 * 	This prevents the accelerometer event handler from automatically stopping the media when played
 	 */
-	public static void onMediaEvent()
+	public static void onMediaEvent( MediaStatus status )
 	{
 		lastSignificantEvent = System.currentTimeMillis();
+		switch( status )
+		{
+		default:
+			break;
+			
+		case STOP:
+			setPlayPause( false );
+			setStopEnabled( false );
+			playButton.setEnabled( true );
+			break;
+			
+		case PAUSED: 
+			setPlayPause( false );
+			setStopEnabled( true );
+			playButton.setEnabled( true );
+			break;
+			
+		case PLAYING:
+			setPlayPause( true );
+			setStopEnabled( true );
+			playButton.setEnabled( true );
+			break;
+		}
 	}
 
 
@@ -245,6 +280,25 @@ public class MainActivity extends Activity implements SensorEventListener
 	{
 		Intent intent = new Intent( MainActivity.this, ListViewActivity.class );
 		startActivity( intent );
+	}
+	
+	
+	/**
+	 * toggles play/pause state
+	 */
+	public void PlayPauseEvent( View view )
+	{
+		application.pauseOrResumeMedia();
+		setPlayPause( application.isMediaPlaying() );
+	}
+	
+	
+	/**
+	 * stops the media state
+	 */
+	public void StopEvent( View view )
+	{
+		application.stopMedia();
 	}
 	
 	
@@ -275,7 +329,7 @@ public class MainActivity extends Activity implements SensorEventListener
 	/**
 	 * enabled the eject button and applies the correct image
 	 */
-	private void setEjectButtonEnabled( boolean enabled )
+	private static void setEjectButtonEnabled( boolean enabled )
 	{
 		loadButton.setEnabled( enabled );
 		if( enabled )
@@ -289,6 +343,38 @@ public class MainActivity extends Activity implements SensorEventListener
 		}
 	}
 	
+	
+	/**
+	 * sets the image of the play/pause button
+	 */
+	private static void setPlayPause( boolean isPlaying )
+	{
+		if( isPlaying )
+		{
+			playButton.setBackgroundResource( R.drawable.pause_enabled );
+		}
+		else
+		{
+			playButton.setBackgroundResource( R.drawable.play_enabled );
+		}
+	}
+	
+	
+	/**
+	 * sets the image of the play/pause button
+	 */
+	private static void setStopEnabled( boolean enabled )
+	{
+		stopButton.setEnabled( enabled );
+		if( enabled )
+		{
+			stopButton.setBackgroundResource( R.drawable.stop_enabled );
+		}
+		else
+		{
+			stopButton.setBackgroundResource( R.drawable.stop );
+		}
+	}
 	
 	
 	
