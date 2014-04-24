@@ -42,7 +42,7 @@ public class MainActivity extends Activity implements SensorEventListener
 	private static final String TAG = "MainActivity";
 	
 	//the number of minutes before cutting off the audio feed, for calculating the delay actually used
-	private final static float AUDIO_CUTOFF_MINUTES = 5f;
+	private final static float AUDIO_CUTOFF_MINUTES = .4f;
 	
 	//the number of milliseconds to wait between significant events
 	private final static long AUDIO_CUTOFF_MILLIS = 1000 * ( (int)( 60f * AUDIO_CUTOFF_MINUTES ) );
@@ -238,19 +238,27 @@ public class MainActivity extends Activity implements SensorEventListener
 			double magnitude = Math.sqrt( ( x * x ) + ( y * y ) + ( z * z ) );
 
 			long currentTime = System.currentTimeMillis();
-			Log.i(TAG, "mag: " + magnitude + " elapsed: " + ( currentTime - lastSignificantEvent ) );
+			long elapsedTime = currentTime - lastSignificantEvent;
+			Log.i(TAG, "mag: " + magnitude + " elapsed: " + elapsedTime );
 			//infoText.setText( "" + magnitude );
 			
+			//keep audio alive if movment events are detected
 			if( magnitude > MOVEMENT_SIGNIFICANCE_THRESHOLD )
 			{
 				lastSignificantEvent = currentTime;
 			}
 			
-			
+			//check if we've reached the cutoff point
 			if( currentTime - lastSignificantEvent > AUDIO_CUTOFF_MILLIS )
 			{
 				application.stopMedia();
 				mainInfoText.setText( "Media paused" );
+			}
+			else
+			{
+				int seconds = (int) elapsedTime / 1000;
+				int totalSeconds = (int) AUDIO_CUTOFF_MILLIS / 1000;
+				mainInfoText.setText( "" + ( totalSeconds - seconds ) + " until pause" );
 			}
 		}
 	}
@@ -272,13 +280,13 @@ public class MainActivity extends Activity implements SensorEventListener
 			break;
 			
 		case STOP:
-			setPlayPause( false );
+			setPlayPauseButton( false );
 			setStopEnabled( false );
 			playButton.setEnabled( true );
 			break;
 			
 		case PAUSED: 
-			setPlayPause( false );
+			setPlayPauseButton( false );
 			setStopEnabled( true );
 			playButton.setEnabled( true );
 			break;
@@ -290,7 +298,7 @@ public class MainActivity extends Activity implements SensorEventListener
 			subAudioText.setText( file.getArtistName() );
 			
 			//tell the buttons to set their states
-			setPlayPause( true );
+			setPlayPauseButton( true );
 			setStopEnabled( true );
 			playButton.setEnabled( true );
 			
@@ -298,10 +306,12 @@ public class MainActivity extends Activity implements SensorEventListener
 			if( file.albumArt != null )
 			{
 				albumArtView.setImageBitmap( file.albumArt );
+				albumArtView.setBackgroundColor( Color.BLACK );
 			}
 			else
 			{
 				albumArtView.setImageBitmap( null );
+				albumArtView.setBackgroundResource( R.drawable.icon_white );
 			}
 			
 			break;
@@ -327,7 +337,7 @@ public class MainActivity extends Activity implements SensorEventListener
 	public void PlayPauseEvent( View view )
 	{
 		application.pauseOrResumeMedia();
-		setPlayPause( application.isMediaPlaying() );
+		setPlayPauseButton( application.isMediaPlaying() );
 	}
 	
 	
@@ -347,6 +357,7 @@ public class MainActivity extends Activity implements SensorEventListener
 	public void SensorButtonEvent( View view )
 	{
 		sensorEnabled = !sensorEnabled;
+		onMediaEvent( MediaStatus.NONE );
 		if( sensorEnabled )
 		{
 			sensorButton.setBackgroundResource( R.drawable.sensor_enabled );
@@ -356,6 +367,10 @@ public class MainActivity extends Activity implements SensorEventListener
 		{
 			sensorButton.setBackgroundResource( R.drawable.sensor_disabled );
 			Toast.makeText( getApplicationContext(), "sensor disabled", Toast.LENGTH_LONG ).show();
+			if( application.isMediaPlaying() )
+			{
+				mainInfoText.setText( "sensor disabled" );
+			}
 		}
 	}
 	
@@ -385,7 +400,7 @@ public class MainActivity extends Activity implements SensorEventListener
 	/**
 	 * sets the image of the play/pause button
 	 */
-	private static void setPlayPause( boolean isPlaying )
+	private static void setPlayPauseButton( boolean isPlaying )
 	{
 		if( isPlaying )
 		{
