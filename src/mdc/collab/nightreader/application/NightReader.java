@@ -70,6 +70,12 @@ public class NightReader extends Application
 	}
 
 	
+	public boolean isMediaPlaying()
+	{
+		if( mediaPlayer == null || !mediaPlayer.isPlaying() ) return false;
+		return true;
+	}
+	
 	
 	/**
 	 * sets the current application's audio file list to the given list

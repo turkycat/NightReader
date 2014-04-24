@@ -20,7 +20,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -256,10 +255,18 @@ public class MainActivity extends Activity implements SensorEventListener
 		//nothing to do here
 	}
 
+	
+	private long lastSignificantTime = System.currentTimeMillis();
+	private static final double SIGNIFICANCE_THRESHOLD = 0.0;
+	private double lastFiveDeltas[] = new double[5];
+	private int currentIndex = 1;
 
+	
 	@Override
 	public void onSensorChanged( SensorEvent event )
 	{
+		if( !application.isMediaPlaying() ) return;
+		
 		//this should be the only event type we get callbacks for, but we will type check for safety
 		if( event.sensor.getType() == Sensor.TYPE_ACCELEROMETER )
 		{
@@ -269,6 +276,17 @@ public class MainActivity extends Activity implements SensorEventListener
 			x = event.values[0];
 			y = event.values[1];
 			z = event.values[2];
+			
+			//more code here
+			double magnitude = ( x * x ) + ( y * y ) + ( z * z );
+			magnitude = Math.sqrt( magnitude );
+			
+			double delta = magnitude - lastFiveDeltas[currentIndex - 1];
+			lastFiveDeltas[ currentIndex++ % 5 ] = delta;
+			
+			if( currentIndex < 5 ) return;
+			
+			Log.i(TAG, "" + magnitude);
 		}
 	}
 
