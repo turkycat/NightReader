@@ -4,6 +4,8 @@ package mdc.collab.nightreader.activities;
  * @author Jesse Frush
  */
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import mdc.collab.nightreader.R;
@@ -13,9 +15,10 @@ import mdc.collab.nightreader.util.AudioFileInfo;
 import android.app.Activity;
 import android.app.Service;
 import android.content.ContentUris;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -29,6 +32,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -61,6 +65,12 @@ public class MainActivity extends Activity implements SensorEventListener
 	//a reference to the largest infotext
 	private static TextView mainInfoText; 
 	
+	//a reference to the main audio info text
+	private static TextView mainAudioText; 
+	
+	//a reference to the largest infotext
+	private static TextView subAudioText; 
+	
 	//a reference to the button which starts the ListViewActivity to select music
 	private static Button loadButton;
 	
@@ -72,6 +82,9 @@ public class MainActivity extends Activity implements SensorEventListener
 	
 	//a reference to the sensor button which toggles the sensor
 	private static Button sensorButton;
+	
+	//a reference to the ImageView used for album art
+	private static ImageView albumArtView;
 	
 	//the sensor manager is used to initialize sensors
 	private static SensorManager sensorManager;
@@ -106,10 +119,18 @@ public class MainActivity extends Activity implements SensorEventListener
 		Typeface font = application.getApplicationTypeface();
 		
 		//get a reference to the inflated TextView objects and set their font
+		Typeface titleFont = Typeface.createFromAsset( getAssets(), "fonts/sidewalk.ttf" );
 		TextView title = (TextView) findViewById( R.id.MainActivity_Title );
+		title.setTypeface( titleFont );
 		mainInfoText = (TextView) findViewById( R.id.MainActivity_MenuText );
-		title.setTypeface( font );
 		mainInfoText.setTypeface( font );
+		mainAudioText = (TextView) findViewById( R.id.mainactivity_mediainfo_main );
+		mainAudioText.setTypeface( font );
+		subAudioText = (TextView) findViewById( R.id.mainactivity_mediainfo_sub );
+		subAudioText.setTypeface( font );
+		
+		//grab the reference to the album art window
+		albumArtView = (ImageView) findViewById( R.id.mainactivity_albumart );
 		
 		//grab references to the four buttons on the screen
 		loadButton = (Button) findViewById( R.id.mainactivity_loadbutton );
@@ -119,7 +140,7 @@ public class MainActivity extends Activity implements SensorEventListener
 		
 		//initialize the progress bar
 		progressBar = (ProgressBar) findViewById( R.id.MainActivity_ProgressBar );
-		progressBar.setProgressDrawable( getResources().getDrawable( R.drawable.main_progress_bar ) );
+		//progressBar.setProgressDrawable( getResources().getDrawable( R.drawable.main_progress_bar ) );
 		
 		//begin detecting audio files with an async task
 		if( application.isAudioFileListLoaded() )
@@ -263,9 +284,26 @@ public class MainActivity extends Activity implements SensorEventListener
 			break;
 			
 		case PLAYING:
+			//set the song information texts to the selected media file
+			AudioFileInfo file = application.getCurrentAudioFile();
+			mainAudioText.setText( file.getSongTitle() );
+			subAudioText.setText( file.getArtistName() );
+			
+			//tell the buttons to set their states
 			setPlayPause( true );
 			setStopEnabled( true );
 			playButton.setEnabled( true );
+			
+			//select the album art if possible
+			if( file.albumArt != null )
+			{
+				albumArtView.setImageBitmap( file.albumArt );
+			}
+			else
+			{
+				albumArtView.setImageBitmap( null );
+			}
+			
 			break;
 		}
 	}
@@ -386,6 +424,9 @@ public class MainActivity extends Activity implements SensorEventListener
 	private class ASyncSongLoader extends AsyncTask<Void, Integer, ArrayList<AudioFileInfo>>
 	{
 		private static final String TAG = "ASyncSongLoader";
+		private int[] start_hex = { 0xff, 0, 0 };
+		private int[] mid_hex = { 0xff, 0xff, 0 };
+		private int[] end_hex = { 0, 0x4a, 0xff };
 		
 		@Override
 		protected void onPreExecute()
@@ -406,8 +447,16 @@ public class MainActivity extends Activity implements SensorEventListener
 		{
 			if( values[0] != null )
 			{
-				//Log.i( TAG, "onProgressUpdate " + values[0] );
+				int value = values[0];
+
+				int[] left = ( value <= 0.5 ? start_hex : mid_hex );
+				int[] right = ( value <= 0.5 ? mid_hex : end_hex );
+				int[] interpolated = { ( left[0] + right[0] ) / 2, ( left[1] + right[1] ) / 2, ( left[2] + right[2] ) / 2 };
+				
+				//interpolate the color
 				progressBar.setProgress( (int) values[0] );
+				progressBar.getProgressDrawable().setColorFilter( Color.rgb( interpolated[0], interpolated[1], interpolated[2] ), android.graphics.PorterDuff.Mode.DST_ATOP );
+				//progressBar.setBackgroundColor( Color.rgb( interpolated[0], interpolated[1], interpolated[2] ) );
 			}
 		}
 		
@@ -458,22 +507,22 @@ public class MainActivity extends Activity implements SensorEventListener
 				
 	            //------------------------------album art code
 	            
-//				Bitmap bitmap = null;
-//				
-//	            try 
-//	            {
-//	                bitmap = MediaStore.Images.Media.getBitmap(MainActivity.this.getContentResolver(), albumArtUri);
-//	                bitmap = Bitmap.createScaledBitmap(bitmap, 50, 50, true);
-//	            } 
-//	            catch (FileNotFoundException e) // Song has no album art!
-//	            {
-//	                e.printStackTrace();
-//	                //bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.audio_file);
-//	            } 
-//	            catch (IOException e) // Other exception
-//	            {
-//	                e.printStackTrace();
-//	            }
+				Bitmap bitmap = null;
+				
+	            try 
+	            {
+	                bitmap = MediaStore.Images.Media.getBitmap(MainActivity.this.getContentResolver(), albumArtUri);
+	                bitmap = Bitmap.createScaledBitmap(bitmap, 200, 200, true);
+	            } 
+	            catch (FileNotFoundException e) // Song has no album art!
+	            {
+	                e.printStackTrace();
+	                //bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.audio_file);
+	            } 
+	            catch (IOException e) // Other exception
+	            {
+	                e.printStackTrace();
+	            }
 	            
 	            
 	            
@@ -485,7 +534,7 @@ public class MainActivity extends Activity implements SensorEventListener
 				info.album = album;
 				info.title = track;
 				info.year = year;
-				//info.albumArt = bitmap;
+				info.albumArt = bitmap;
 				info.albumArtUri = albumArtUri;
 				
 				localList.add(info);

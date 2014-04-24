@@ -31,6 +31,8 @@ public class NightReader extends Application
 	private ArrayList<AudioFileInfo> audioFiles;
 	private Sorting sortedBy;
 	private MediaStatus status;
+	
+	private AudioFileInfo currentAudioFile;
 
 	public enum Sorting
 	{
@@ -49,9 +51,22 @@ public class NightReader extends Application
 	{
 		super.onCreate();
 
-		applicationFont = Typeface.createFromAsset( getAssets(), "fonts/MAYBE MAYBE NOT.TTF" );
+		applicationFont = Typeface.createFromAsset( getAssets(), "fonts/ABANDON.TTF" );
+//		applicationFont = Typeface.createFromAsset( getAssets(), "fonts/bellerose.ttf" );
+//		applicationFont = Typeface.createFromAsset( getAssets(), "fonts/nougat.ttf" );
 		sortedBy = Sorting.NONE;
 		status = MediaStatus.NONE;
+		currentAudioFile = null;
+	}
+	
+	
+	
+	/**
+	 * returns the current audio file being played
+	 */
+	public AudioFileInfo getCurrentAudioFile()
+	{
+		return currentAudioFile;
 	}
 	
 
@@ -64,6 +79,7 @@ public class NightReader extends Application
 		if( file == null || file.uri == null ) return;
 		
 		stopMedia();
+		currentAudioFile = file;
 		mediaPlayer = MediaPlayer.create( getApplicationContext(), file.uri );
 		MainActivity.onMediaEvent( MediaStatus.PLAYING );
 		mediaPlayer.start();
@@ -116,8 +132,9 @@ public class NightReader extends Application
 						//do nothing
 						//e.printStackTrace();
 					}
+					mediaPlayer.seekTo( 0 );
 				}
-				mediaPlayer.seekTo( 0 );
+				
 				mediaPlayer.start();
 				MainActivity.onMediaEvent( MediaStatus.PLAYING );
 				status = MediaStatus.PLAYING;

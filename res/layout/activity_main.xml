@@ -15,17 +15,15 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:gravity="center_horizontal" >
 
         <TextView
             android:id="@+id/MainActivity_Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:text="@string/app_name"
             android:textColor="@color/CustomBlue"
-            android:shadowColor="#ffffff"
-            android:shadowRadius="1"
             android:textSize="40sp"
             android:textStyle="bold" />
     </LinearLayout>
@@ -39,16 +37,18 @@
 
         <ImageView
             android:id="@+id/mainactivity_albumart"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:contentDescription="@string/app_name" />
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:contentDescription="@string/app_name"
+            android:background="@drawable/icon_white" />
     </LinearLayout>
 
     <RelativeLayout
         android:id="@+id/mainactivity_control_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2" >
+        android:layout_weight="1"
+        android:layout_marginTop="20sp" >
 
         <Button
             android:id="@+id/mainactivity_loadbutton"
@@ -90,11 +90,11 @@
             android:layout_centerHorizontal="true"
             android:shadowColor="#ffffff"
             android:shadowRadius="1"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:text="@string/MainActivity_MenuTextString"
             android:textColor="@color/CustomBlue"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textSize="30sp"
+            android:textStyle="normal" />
 
         <ProgressBar
             android:id="@+id/MainActivity_ProgressBar"
@@ -106,5 +106,39 @@
             android:layout_marginTop="15dp" />
         
     </RelativeLayout>
+    
+    <RelativeLayout
+        android:id="@+id/mainactivity_mediainfo_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" >
+        
+        <TextView
+            android:id="@+id/mainactivity_mediainfo_main"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginTop="20dp"
+            android:maxLines="1"
+            android:scrollHorizontally="true"
+            android:text="@string/mainactivity_mediainfo_mainstring"
+            android:textColor="@android:color/white"
+            android:textSize="35sp"
+            android:textStyle="bold" />
+        
+        <TextView
+            android:id="@+id/mainactivity_mediainfo_sub"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/mainactivity_mediainfo_main"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:maxLines="1"
+            android:scrollHorizontally="true"
+            android:textColor="@color/CustomBlue"
+            android:textSize="25sp"
+            android:textStyle="normal" />
+        
+        </RelativeLayout>
 
 </LinearLayout>

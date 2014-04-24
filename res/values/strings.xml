@@ -7,6 +7,7 @@
     <string name="title_activity_list">ListActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_list_view">ListViewActivity</string>
-    <string name="MainActivity_MenuTextString">Loading...</string>
+    <string name="MainActivity_MenuTextString">Loading&#8230;</string>
+    <string name="mainactivity_mediainfo_mainstring"></string>
 
 </resources>
