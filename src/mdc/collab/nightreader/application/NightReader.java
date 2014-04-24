@@ -57,6 +57,7 @@ public class NightReader extends Application
 		
 		stopMedia();
 		mediaPlayer = MediaPlayer.create( getApplicationContext(), file.uri );
+		MainActivity.onMediaEvent();
 		mediaPlayer.start();
 	}
 	

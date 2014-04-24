@@ -4,10 +4,7 @@ package mdc.collab.nightreader.activities;
  * @author Jesse Frush
  */
 
-import java.io.File;
-import java.io.PrintWriter;
 import java.util.ArrayList;
-
 import mdc.collab.nightreader.R;
 import mdc.collab.nightreader.application.NightReader;
 import mdc.collab.nightreader.util.AudioFileInfo;
@@ -37,15 +34,43 @@ public class MainActivity extends Activity implements SensorEventListener
 {
 	private static final String TAG = "MainActivity";
 	
+	//the number of minutes before cutting off the audio feed, for calculating the delay actually used
+	private final static float AUDIO_CUTOFF_MINUTES = 5f;
+	
+	//the number of milliseconds to wait between significant events
+	private final static long AUDIO_CUTOFF_MILLIS = 1000 * ( (int)( 60f * AUDIO_CUTOFF_MINUTES ) );
+	
+	//the threshold for what determines "significant" movement of the phone
+	private static final double MOVEMENT_SIGNIFICANCE_THRESHOLD = 0.5;
+	
+	//a reference to the application instance
 	private static NightReader application;
-	private static Context applicationContext;
+	
+	//a reference to the AsyncTask implementation which loads assets
 	private static ASyncSongLoader loader;
+	
+	//a reference to the view's progress bar
 	private ProgressBar progressBar;
-	private TextView infoText; 
+	
+	//a reference to the largest infotext
+	private TextView mainInfoText; 
+	
+	//a reference to the button which starts the ListViewActivity to select music
 	private Button loadButton;
 	
+	//the sensor manager is used to initialize sensors
 	private SensorManager sensorManager;
+	
+	//the accelerometer is used to detect movement
 	private Sensor accelerometer;
+
+	
+	
+	//accounts for gravity
+	float[] gravity;
+	
+	//the time, in millis, of the last significant event detected
+	private static long lastSignificantEvent;
 	
 	
 	@Override
@@ -54,19 +79,22 @@ public class MainActivity extends Activity implements SensorEventListener
 		super.onCreate( savedInstanceState );
 		setContentView( R.layout.activity_main );
 		
-		application = (NightReader) getApplication();
+		gravity = new float[3];
 		
-		//set the context for later use
-		applicationContext = getApplicationContext();
+		//set the current timestamp to get proper delays
+		lastSignificantEvent = System.currentTimeMillis();
+		
+		//grab a reference to the NightReader application class, defined ourselves
+		application = (NightReader) getApplication();
 		
 		//retrieve the application's custom font by calling a special function of the NightReader class
 		Typeface font = application.getApplicationTypeface();
 		
 		//get a reference to the inflated TextView objects and set their font
 		TextView title = (TextView) findViewById( R.id.MainActivity_Title );
-		infoText = (TextView) findViewById( R.id.MainActivity_MenuText );
+		mainInfoText = (TextView) findViewById( R.id.MainActivity_MenuText );
 		title.setTypeface( font );
-		infoText.setTypeface( font );
+		mainInfoText.setTypeface( font );
 		
 		loadButton = (Button) findViewById( R.id.MainActivity_LoadButton );
 		
@@ -142,7 +170,7 @@ public class MainActivity extends Activity implements SensorEventListener
 		{
 			super.onPostExecute( result );
 			
-			infoText.setText( "boats n hoes" );
+			mainInfoText.setText( "boats n hoes" );
 			application.setAudioFileList( result );
 			loadButton.setEnabled( true );
 		}
@@ -232,10 +260,6 @@ public class MainActivity extends Activity implements SensorEventListener
 	
 	
 	
-	
-	//accounts for gravity
-	float[] gravity = new float[3];
-	
 	/**
 	 * initializes the sensors, currently just the accelerometer
 	 */
@@ -252,8 +276,7 @@ public class MainActivity extends Activity implements SensorEventListener
 	}
 
 
-
-
+	
 	@Override
 	public void onAccuracyChanged( Sensor arg0, int arg1 )
 	{
@@ -261,15 +284,9 @@ public class MainActivity extends Activity implements SensorEventListener
 	}
 
 	
-	private long lastSignificantTime = System.currentTimeMillis();
-	private static final double SIGNIFICANCE_THRESHOLD = 0.0;
-
-	
 	@Override
 	public void onSensorChanged( SensorEvent event )
 	{
-		//if( !application.isMediaPlaying() ) return;
-		
 		//this should be the only event type we get callbacks for, but we will type check for safety
 		if( event.sensor.getType() == Sensor.TYPE_ACCELEROMETER )
 		{
@@ -292,6 +309,9 @@ public class MainActivity extends Activity implements SensorEventListener
 			gravity[0] = alpha * gravity[0] + ( 1 - alpha ) * event.values[0];
 			gravity[1] = alpha * gravity[1] + ( 1 - alpha ) * event.values[1];
 			gravity[2] = alpha * gravity[2] + ( 1 - alpha ) * event.values[2];
+			
+			//we can stop here if we aren't playing any music
+			if( !application.isMediaPlaying() ) return;
 
 			// Remove the gravity contribution with the high-pass filter.
 			x = event.values[0] - gravity[0];
@@ -300,13 +320,33 @@ public class MainActivity extends Activity implements SensorEventListener
 			
 			//the first method shows the innaccuracy
 			double magnitude = Math.sqrt( ( x * x ) + ( y * y ) + ( z * z ) );
-			
-			
-			Log.i(TAG, "" + magnitude);
+
+			long currentTime = System.currentTimeMillis();
+			Log.i(TAG, "mag: " + magnitude + " elapsed: " + ( currentTime - lastSignificantEvent ) );
 			//infoText.setText( "" + magnitude );
 			
+			if( magnitude > MOVEMENT_SIGNIFICANCE_THRESHOLD )
+			{
+				lastSignificantEvent = currentTime;
+			}
 			
+			
+			if( currentTime - lastSignificantEvent > AUDIO_CUTOFF_MILLIS )
+			{
+				application.stopMedia();
+			}
 		}
+	}
+	
+
+
+	/**
+	 * called when media is played, resumed, or selected.
+	 * 	This prevents the accelerometer event handler from automatically stopping the media when played
+	 */
+	public static void onMediaEvent()
+	{
+		lastSignificantEvent = System.currentTimeMillis();
 	}
 
 }
