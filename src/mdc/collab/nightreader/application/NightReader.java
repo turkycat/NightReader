@@ -69,7 +69,26 @@ public class NightReader extends Application
 	{
 		if( mediaPlayer != null ) mediaPlayer.stop();
 	}
-
+	
+	
+	/**
+	 * stops the active player, if necessary
+	 */
+	public void pauseOrResumeMedia()
+	{
+		if( mediaPlayer != null )
+		{
+			if( mediaPlayer.isPlaying() )
+			{
+				mediaPlayer.pause();
+			}
+			else
+			{
+				mediaPlayer.start();
+			}
+		}
+	}
+	
 	
 	public boolean isMediaPlaying()
 	{

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item android:id="@+id/progressStyle">
+
+        <shape>
+
+            <corners android:radius="5dip" />
+
+            <gradient
+                android:startColor="#ff0000"
+                android:angle="0"
+                android:centerColor="#ffff00"
+                android:endColor="@color/CustomBlue" />
+        </shape>
+    </item>
+
+<!--                 android:centerY="0.75" -->
+</layer-list><!-- <ProgressBar xmlns:android="http://schemas.android.com/apk/res/android" -->
+<!-- android:layout_width="match_parent" -->
+<!-- android:layout_height="match_parent" > -->
+
+
+<!-- </ProgressBar> -->

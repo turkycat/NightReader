@@ -100,6 +100,7 @@ public class MainActivity extends Activity implements SensorEventListener
 		
 		//initialize the progress bar
 		progressBar = (ProgressBar) findViewById( R.id.MainActivity_ProgressBar );
+		progressBar.setProgressDrawable( getResources().getDrawable( R.drawable.main_progress_bar ) );
 		
 		//begin detecting audio files with an async task
 		if( application.isAudioFileListLoaded() )
@@ -334,6 +335,7 @@ public class MainActivity extends Activity implements SensorEventListener
 			if( currentTime - lastSignificantEvent > AUDIO_CUTOFF_MILLIS )
 			{
 				application.stopMedia();
+				mainInfoText.setText( "Media paused" );
 			}
 		}
 	}

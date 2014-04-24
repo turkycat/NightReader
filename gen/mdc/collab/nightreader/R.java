@@ -30,12 +30,13 @@ public final class R {
         public static final int book_select=0x7f020001;
         public static final int eject=0x7f020002;
         public static final int ic_launcher=0x7f020003;
-        public static final int microphone=0x7f020004;
-        public static final int microphone_select=0x7f020005;
-        public static final int notes=0x7f020006;
-        public static final int notes_select=0x7f020007;
-        public static final int record=0x7f020008;
-        public static final int record_select=0x7f020009;
+        public static final int main_progress_bar=0x7f020004;
+        public static final int microphone=0x7f020005;
+        public static final int microphone_select=0x7f020006;
+        public static final int notes=0x7f020007;
+        public static final int notes_select=0x7f020008;
+        public static final int record=0x7f020009;
+        public static final int record_select=0x7f02000a;
     }
     public static final class id {
         public static final int AlbumNameButton=0x7f090003;
@@ -51,8 +52,9 @@ public final class R {
         public static final int SongTitleButton=0x7f090001;
         public static final int Subtitle=0x7f09000d;
         public static final int Title=0x7f09000c;
-        public static final int action_settings=0x7f09000e;
+        public static final int action_settings=0x7f09000f;
         public static final int filler=0x7f090006;
+        public static final int progressStyle=0x7f09000e;
     }
     public static final class layout {
         public static final int activity_list_view=0x7f030000;
