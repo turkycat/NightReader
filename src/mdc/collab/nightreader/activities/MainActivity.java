@@ -28,6 +28,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.GetChars;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -303,9 +304,10 @@ public class MainActivity extends Activity implements SensorEventListener
 			playButton.setEnabled( true );
 			
 			//select the album art if possible
-			if( file.albumArt != null )
+			Bitmap albumArt = file.getAlbumArt( application.getApplicationContext() );
+			if( albumArt != null )
 			{
-				albumArtView.setImageBitmap( file.albumArt );
+				albumArtView.setImageBitmap( albumArt );
 				albumArtView.setBackgroundColor( Color.BLACK );
 			}
 			else
@@ -522,23 +524,6 @@ public class MainActivity extends Activity implements SensorEventListener
 				
 	            //------------------------------album art code
 	            
-				Bitmap bitmap = null;
-				
-	            try 
-	            {
-	                bitmap = MediaStore.Images.Media.getBitmap(MainActivity.this.getContentResolver(), albumArtUri);
-	                bitmap = Bitmap.createScaledBitmap(bitmap, 200, 200, true);
-	            } 
-	            catch (FileNotFoundException e) // Song has no album art!
-	            {
-	                e.printStackTrace();
-	                //bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.audio_file);
-	            } 
-	            catch (IOException e) // Other exception
-	            {
-	                e.printStackTrace();
-	            }
-	            
 	            
 	            
 				
@@ -549,7 +534,6 @@ public class MainActivity extends Activity implements SensorEventListener
 				info.album = album;
 				info.title = track;
 				info.year = year;
-				info.albumArt = bitmap;
 				info.albumArtUri = albumArtUri;
 				
 				localList.add(info);

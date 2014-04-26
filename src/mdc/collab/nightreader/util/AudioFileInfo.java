@@ -4,10 +4,13 @@ package mdc.collab.nightreader.util;
  * @author Jesse Frush
  */
 
-import java.net.URI;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.provider.MediaStore;
 
 public class AudioFileInfo
 {
@@ -19,7 +22,6 @@ public class AudioFileInfo
 	public String year;
 	public String genre;
 	public Uri albumArtUri;
-	public Bitmap albumArt;
 	public int duration;
 	
 	@Override
@@ -53,5 +55,28 @@ public class AudioFileInfo
 	public String getGenre()
 	{
 		return genre == null ? "Unknown Genre" : genre;
+	}
+	
+	
+	public Bitmap getAlbumArt( Context context )
+	{
+		Bitmap bitmap = null;
+		
+        try 
+        {
+            bitmap = MediaStore.Images.Media.getBitmap( context.getContentResolver(), albumArtUri);
+            //bitmap = Bitmap.createScaledBitmap(bitmap, 200, 200, true);
+        } 
+        catch (FileNotFoundException e) // Song has no album art!
+        {
+            e.printStackTrace();
+            //bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.audio_file);
+        } 
+        catch (IOException e) // Other exception
+        {
+            e.printStackTrace();
+        }
+        
+        return bitmap;
 	}
 }
