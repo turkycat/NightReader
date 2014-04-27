@@ -4,8 +4,6 @@ package mdc.collab.nightreader.activities;
  * @author Jesse Frush
  */
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import mdc.collab.nightreader.R;
@@ -24,11 +22,11 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.text.GetChars;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -43,7 +41,7 @@ public class MainActivity extends Activity implements SensorEventListener
 	private static final String TAG = "MainActivity";
 	
 	//the number of minutes before cutting off the audio feed, for calculating the delay actually used
-	private final static float AUDIO_CUTOFF_MINUTES = .4f;
+	private final static float AUDIO_CUTOFF_MINUTES = 5f;
 	
 	//the number of milliseconds to wait between significant events
 	private final static long AUDIO_CUTOFF_MILLIS = 1000 * ( (int)( 60f * AUDIO_CUTOFF_MINUTES ) );
@@ -96,8 +94,6 @@ public class MainActivity extends Activity implements SensorEventListener
 	//the state of the sensor
 	private boolean sensorEnabled;
 
-	
-	
 	//accounts for gravity
 	float[] gravity;
 	
@@ -155,6 +151,9 @@ public class MainActivity extends Activity implements SensorEventListener
 		}
 		
 		initializeSensors();
+		
+		SongStatusThread thread = new SongStatusThread();
+		thread.start();
 	}
 	
 
@@ -302,6 +301,9 @@ public class MainActivity extends Activity implements SensorEventListener
 			setPlayPauseButton( true );
 			setStopEnabled( true );
 			playButton.setEnabled( true );
+			
+			//set the progress bar's new max, in seconds
+			progressBar.setMax( application.getCurrentMediaPlayer().getDuration() / 1000 );
 			
 			//select the album art if possible
 			Bitmap albumArt = file.getAlbumArt( application.getApplicationContext() );
@@ -547,4 +549,50 @@ public class MainActivity extends Activity implements SensorEventListener
 		}
 	}
 
+	
+	private class SongStatusThread extends Thread
+	{
+		private boolean running;
+		
+		public SongStatusThread()
+		{
+			running = true;
+		}
+		
+		@Override
+		public void run()
+		{
+			while( running )
+			{
+//				synchronized( this )
+//				{
+					if( application.isMediaPlaying() )
+					{
+						MediaPlayer player = application.getCurrentMediaPlayer();
+						progressBar.setProgress( player.getCurrentPosition() / 1000 );
+					}
+					else
+					{
+						try
+						{
+							Thread.sleep( 1000 );
+						}
+						catch( InterruptedException e )
+						{
+							//do nothing
+						}
+					}
+//				}
+			}
+		}
+		
+		
+		/**
+		 * instructs the thread to halt at a safe time
+		 */
+		public void finish()
+		{
+			running = false;
+		}
+	}
 }

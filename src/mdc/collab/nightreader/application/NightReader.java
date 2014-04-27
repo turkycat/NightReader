@@ -64,7 +64,7 @@ public class NightReader extends Application
 	/**
 	 * returns the current audio file being played
 	 */
-	public AudioFileInfo getCurrentAudioFile()
+	public synchronized AudioFileInfo getCurrentAudioFile()
 	{
 		return currentAudioFile;
 	}
@@ -74,7 +74,7 @@ public class NightReader extends Application
 	/**
 	 * will attempt to load and play the given Uri
 	 */
-	public void playMedia( AudioFileInfo file )
+	public synchronized void playMedia( AudioFileInfo file )
 	{
 		if( file == null || file.uri == null ) return;
 		
@@ -90,7 +90,7 @@ public class NightReader extends Application
 	/**
 	 * stops the active player, if necessary
 	 */
-	public void stopMedia()
+	public synchronized void stopMedia()
 	{
 		if( mediaPlayer != null )
 		{
@@ -104,7 +104,7 @@ public class NightReader extends Application
 	/**
 	 * stops the active player, if necessary
 	 */
-	public void pauseOrResumeMedia()
+	public synchronized void pauseOrResumeMedia()
 	{
 		if( mediaPlayer != null )
 		{
@@ -143,7 +143,7 @@ public class NightReader extends Application
 	}
 	
 	
-	public boolean isMediaPlaying()
+	public synchronized boolean isMediaPlaying()
 	{
 		if( mediaPlayer == null || !mediaPlayer.isPlaying() ) return false;
 		return true;
@@ -151,9 +151,18 @@ public class NightReader extends Application
 	
 	
 	/**
+	 * returns the current percentage of the song being played
+	 */
+	public synchronized MediaPlayer getCurrentMediaPlayer()
+	{
+		return mediaPlayer;
+	}
+	
+	
+	/**
 	 * sets the current application's audio file list to the given list
 	 */
-	public void setAudioFileList( ArrayList<AudioFileInfo> audioFiles )
+	public synchronized void setAudioFileList( ArrayList<AudioFileInfo> audioFiles )
 	{
 		this.audioFiles = audioFiles;
 		sortAudioFiles( Sorting.SONG );
@@ -164,7 +173,7 @@ public class NightReader extends Application
 	/**
 	 * sets the current application's audio file list to the given list
 	 */
-	public ArrayList<AudioFileInfo> getAudioFileList()
+	public synchronized ArrayList<AudioFileInfo> getAudioFileList()
 	{
 		return audioFiles;
 	}
@@ -174,7 +183,7 @@ public class NightReader extends Application
 	/**
 	 * determines if the audio file list has already been loaded
 	 */
-	public boolean isAudioFileListLoaded()
+	public synchronized boolean isAudioFileListLoaded()
 	{
 		return audioFiles != null;
 	}
@@ -185,7 +194,7 @@ public class NightReader extends Application
 	 * returns the Typeface used by this application for custom titles and other
 	 * text items.
 	 */
-	public Typeface getApplicationTypeface()
+	public synchronized Typeface getApplicationTypeface()
 	{
 		return applicationFont;
 	}
@@ -195,7 +204,7 @@ public class NightReader extends Application
 	/**
 	 * returns the sorting type which the audio files are currently arranged by
 	 */
-	public Sorting getSorting()
+	public synchronized Sorting getSorting()
 	{
 		return sortedBy;
 	}
@@ -206,7 +215,7 @@ public class NightReader extends Application
 	/**
 	 * sorts the list of songs given a requested sorting type
 	 */
-	public void sortAudioFiles( Sorting requestedSort )
+	public synchronized void sortAudioFiles( Sorting requestedSort )
 	{
 		if( !isAudioFileListLoaded() ) return;
 

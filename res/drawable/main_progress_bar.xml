@@ -1,22 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <item android:id="@+id/progressStyle">
-
+    <item android:id="@android:id/background">
         <shape>
-
             <corners android:radius="5dip" />
+			<stroke android:color="@android:color/white"/>
+			
+            </shape>
+    </item>
+    <item android:id="@android:id/progress">
+        <clip>
+            <shape>
+                <corners android:radius="5dip" />
 
-            <gradient
-                android:startColor="#ff0000"
+                <gradient
                 android:angle="0"
                 android:centerColor="#ffff00"
+                android:endColor="@color/CustomBlue"
+                android:startColor="#ff0000" />
+        	</shape>
+        </clip>
+    </item><item android:id="@android:id/secondaryProgress">
+        <clip>
+            <shape>
+                <corners android:radius="5dip" />
+
+                <gradient
+                android:angle="0"
+                android:startColor="#ff0000"
+                android:centerColor="#ffff00"
                 android:endColor="@color/CustomBlue" />
-        </shape>
+        	</shape>
+        </clip>
+
+        <color android:color="#f58233" />
     </item>
 
-<!--                 android:centerY="0.75" -->
-</layer-list><!-- <ProgressBar xmlns:android="http://schemas.android.com/apk/res/android" -->
+    <!-- android:centerY="0.75" -->
+
+</layer-list> <!-- <ProgressBar xmlns:android="http://schemas.android.com/apk/res/android" -->
 <!-- android:layout_width="match_parent" -->
 <!-- android:layout_height="match_parent" > -->
 
