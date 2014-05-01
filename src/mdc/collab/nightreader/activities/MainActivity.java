@@ -167,6 +167,13 @@ public class MainActivity extends Activity implements SensorEventListener
 	}
 	
 	
+	@Override
+	public void onBackPressed()
+	{
+		moveTaskToBack( true );
+	}
+	
+	
 
 //-----------------------------------------------------accelerometer & other sensor related methods
 	

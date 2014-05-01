@@ -76,24 +76,6 @@ public class ListViewActivity extends Activity
 		
 
 		
-//		switch( application.getSorting() )
-//		{
-//		default:
-//			list = application.getAllAudioFiles();
-//			populateListView( list );
-//			break;
-//			
-//		case ALBUM:
-//			list = null;
-//			populateListView( application.getAlbums() );
-//			break;
-//			
-//		case ARTIST:
-//			list = null;
-//			populateListView( application.getArtists() );
-//			break;
-//		}
-		
 		//set up the list
 		
 		if( list == null )

@@ -112,6 +112,7 @@ public class NightReader extends Application
 		mediaPlayer.start();
 	}
 
+	
 	/**
 	 * stops the active player, if necessary
 	 */
