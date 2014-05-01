@@ -23,6 +23,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -258,7 +259,7 @@ public class MainActivity extends Activity implements SensorEventListener
 			{
 				int seconds = (int) elapsedTime / 1000;
 				int totalSeconds = (int) AUDIO_CUTOFF_MILLIS / 1000;
-				mainInfoText.setText( "" + ( totalSeconds - seconds ) + " until pause" );
+				if( sensorEnabled) mainInfoText.setText( "" + ( totalSeconds - seconds ) + " until pause" );
 			}
 		}
 	}
@@ -331,6 +332,7 @@ public class MainActivity extends Activity implements SensorEventListener
 	public void EjectButtonEvent( View view )
 	{
 		Intent intent = new Intent( MainActivity.this, ListViewActivity.class );
+		//intent.addFlags( Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT );
 		startActivity( intent );
 	}
 	
@@ -364,6 +366,7 @@ public class MainActivity extends Activity implements SensorEventListener
 		onMediaEvent( MediaStatus.NONE );
 		if( sensorEnabled )
 		{
+			mainInfoText.setVisibility( View.VISIBLE );
 			sensorButton.setBackgroundResource( R.drawable.sensor_enabled );
 			Toast.makeText( getApplicationContext(), "sensor enabled", Toast.LENGTH_LONG ).show();
 		}
@@ -371,10 +374,11 @@ public class MainActivity extends Activity implements SensorEventListener
 		{
 			sensorButton.setBackgroundResource( R.drawable.sensor_disabled );
 			Toast.makeText( getApplicationContext(), "sensor disabled", Toast.LENGTH_LONG ).show();
-			if( application.isMediaPlaying() )
-			{
-				mainInfoText.setText( "sensor disabled" );
-			}
+			mainInfoText.setVisibility( View.INVISIBLE );
+//			if( application.isMediaPlaying() )
+//			{
+//				mainInfoText.setText( "sensor disabled" );
+//			}
 		}
 	}
 	
@@ -564,8 +568,8 @@ public class MainActivity extends Activity implements SensorEventListener
 		{
 			while( running )
 			{
-//				synchronized( this )
-//				{
+				synchronized( MainActivity.this )
+				{
 					if( application.isMediaPlaying() )
 					{
 						MediaPlayer player = application.getCurrentMediaPlayer();
@@ -582,7 +586,7 @@ public class MainActivity extends Activity implements SensorEventListener
 							//do nothing
 						}
 					}
-//				}
+				}
 			}
 		}
 		

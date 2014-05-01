@@ -50,6 +50,6 @@ public class AudioFileGroup implements Audio
 	@Override
 	public String getSubtitle()
 	{
-		return "";
+		return subtitle;
 	}
 }

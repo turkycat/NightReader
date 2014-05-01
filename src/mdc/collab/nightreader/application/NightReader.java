@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import mdc.collab.nightreader.activities.ListViewActivity;
 import mdc.collab.nightreader.activities.MainActivity;
 import mdc.collab.nightreader.util.AudioFileGroup;
 import mdc.collab.nightreader.util.AudioFileInfo;
@@ -84,7 +85,9 @@ public class NightReader extends Application
 		stopMedia();
 
 		currentAudioFile = file;
-		mediaPlayer = MediaPlayer.create( getApplicationContext(), file.uri );
+		MediaPlayer next = MediaPlayer.create( getApplicationContext(), file.uri );
+		next.setOnCompletionListener( new ListViewActivity.SongCompletionListener() );
+		mediaPlayer = next;
 
 		status = MediaStatus.PLAYING;
 		MainActivity.onMediaEvent( status );
@@ -224,6 +227,8 @@ public class NightReader extends Application
 		sortAudioFiles( Sorting.SONG, audioFiles );
 	}
 
+	
+	
 	/**
 	 * sets the current application's audio file list to the given list
 	 */
@@ -238,7 +243,7 @@ public class NightReader extends Application
 	 */
 	public synchronized ArrayList<AudioFileGroup> getArtists()
 	{
-		return artists;
+		return artists; 
 	}
 
 	
