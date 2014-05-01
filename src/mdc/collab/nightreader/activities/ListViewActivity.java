@@ -28,7 +28,9 @@ public class ListViewActivity extends Activity
 	private static NightReader application;
 	private ArrayList<AudioFileInfo> audioFiles;
 	private ListView listView;
-	private int last = -1;
+	
+	//controls what level of the list we are on. behaviors such as selecting items & the back button depend on this
+	private boolean isMainMenu;
 	
 	@Override
 	protected void onCreate( Bundle savedInstanceState )
@@ -46,24 +48,23 @@ public class ListViewActivity extends Activity
 			@Override
 			public void onItemClick( AdapterView<?> adapter, View v, int position, long id )
 			{
-				Log.i( TAG, "onItemSelected" );
-				if( position == last )
+				Sorting sort = application.getSorting();
+				if( sort == Sorting.SONG )
 				{
-					last = -1;
-					application.stopMedia();
-				}
-				else
-				{
-					last = position;
 					application.playMedia( audioFiles.get( position ) );
 					ListViewActivity.this.finish();
+				}
+				else if( isMainMenu && ( sort == Sorting.ALBUM || sort == Sorting.ARTIST ) )
+				{
+					//rest of opening second menu here
 				}
 			}
 		} );
 		
-		
+		//set up the list
 		audioFiles = application.getAudioFileList();
 		populateListView();
+		isMainMenu = true;
 	}
 	
 
@@ -75,6 +76,18 @@ public class ListViewActivity extends Activity
 		return true;
 	}
 	
+	
+	
+	/**
+	 * override the behavior of the back button, to prevent from automatically exiting
+	 * 	the activity if we are browsing an artist, album, or other
+	 */
+	@Override
+	public void onBackPressed()
+	{
+		//Sorting sort = application.getSorting();
+		super.onBackPressed();
+	}
 	
 	
 	/**

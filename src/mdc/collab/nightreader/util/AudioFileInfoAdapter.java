@@ -69,6 +69,7 @@ public class AudioFileInfoAdapter extends BaseAdapter
 		AudioFileInfo audioFile = audioFiles.get( position );
 
 		String titleString = getTitleString( position );
+		//String titleString = audioFile.getSongTitle();
 
 		if( position == 0 || titleString.charAt( 0 ) != getTitleString( position - 1 ).charAt( 0 ) )
 		{
@@ -80,7 +81,7 @@ public class AudioFileInfoAdapter extends BaseAdapter
 			holder.Separator.setVisibility( View.GONE );
 		}
 
-		holder.SongTitleField.setText( titleString );
+		holder.SongTitleField.setText( audioFile.getSongTitle() );
 		holder.ArtistNameField.setText( audioFile.getArtistName() );
 
 		return convertView;
