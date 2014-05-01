@@ -12,7 +12,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
 
-public class AudioFileInfo
+public class AudioFileInfo implements Audio
 {
 	public Uri uri;
 	public String rawPath;
@@ -78,5 +78,25 @@ public class AudioFileInfo
         }
         
         return bitmap;
+	}
+
+
+	/**
+	 * returns the name of the song as the title
+	 */
+	@Override
+	public String getTitle()
+	{
+		return getSongTitle();
+	}
+	
+	
+	/**
+	 * returns the name of the artist as the subtitle
+	 */
+	@Override
+	public String getSubtitle()
+	{
+		return getArtistName();
 	}
 }

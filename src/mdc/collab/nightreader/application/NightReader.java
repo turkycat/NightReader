@@ -36,10 +36,10 @@ public class NightReader extends Application
 	private ArrayList<AudioFileInfo> audioFiles;
 	
 	//a collection of artists
-	AudioFileGroup artists;
+	ArrayList<AudioFileGroup> artists;
 	
 	//a collection of albums
-	AudioFileGroup albums;
+	ArrayList<AudioFileGroup> albums;
 
 	private AudioFileInfo currentAudioFile;
 
@@ -165,21 +165,91 @@ public class NightReader extends Application
 	/**
 	 * sets the current application's audio file list to the given list
 	 */
-	public synchronized void setAudioFileItems( ArrayList<AudioFileInfo> allFiles, AudioFileGroup artists, AudioFileGroup albums )
+	public synchronized void setAudioFileList( ArrayList<AudioFileInfo> allFiles )
 	{
 		this.audioFiles = allFiles;
-		this.artists = artists;
-		this.albums = albums;
+		int size = audioFiles.size();
+		
+
+		//create a grouping for artists
+		sortAudioFiles( Sorting.ARTIST, audioFiles );
+		this.artists = new ArrayList<AudioFileGroup>();
+		
+		AudioFileGroup currentGroup = null;
+		for( int i = 0; i < size; ++i )
+		{
+			//grab the next item to be categorized
+			AudioFileInfo item = audioFiles.get( i );
+			
+			//compare the current artist with the ongoing artist grouping
+			String artist = item.getArtistName();
+			if( currentGroup == null || !artist.equals( currentGroup.getTitle() ) )
+			{
+				if( currentGroup != null ) artists.add( currentGroup );
+				currentGroup = new AudioFileGroup( artist, "" );
+			}
+			
+			//add the item to the current group
+			currentGroup.addItem( item );
+		}
+		artists.add( currentGroup );
+		
+		
+
+		//create a grouping for albums
+		sortAudioFiles( Sorting.ALBUM, audioFiles );
+		this.albums = new ArrayList<AudioFileGroup>();
+		
+		currentGroup = null;
+		for( int i = 0; i < size; ++i )
+		{
+			//grab the next item to be categorized
+			AudioFileInfo item = audioFiles.get( i );
+			
+			//compare the current artist with the ongoing artist grouping
+			String album = item.getAlbumName();
+			if( currentGroup == null || !album.equals( currentGroup.getTitle() ) )
+			{
+				if( currentGroup != null ) albums.add( currentGroup );
+				currentGroup = new AudioFileGroup( album , item.getArtistName() );
+			}
+			
+			//add the item to the current group
+			currentGroup.addItem( item );
+		}
+		albums.add( currentGroup );
+		
+		
+		//finally, sort the files by song for the default sorting
 		sortAudioFiles( Sorting.SONG, audioFiles );
 	}
 
 	/**
 	 * sets the current application's audio file list to the given list
 	 */
-	public synchronized ArrayList<AudioFileInfo> getAudioFileList()
+	public synchronized ArrayList<AudioFileInfo> getAllAudioFiles()
 	{
 		return audioFiles;
 	}
+
+
+	/**
+	 * sets the current application's audio file list to the given list
+	 */
+	public synchronized ArrayList<AudioFileGroup> getArtists()
+	{
+		return artists;
+	}
+
+	
+	/**
+	 * sets the current application's audio file list to the given list
+	 */
+	public synchronized ArrayList<AudioFileGroup> getAlbums()
+	{
+		return albums;
+	}
+
 
 	/**
 	 * determines if the audio file list has already been loaded
@@ -211,7 +281,11 @@ public class NightReader extends Application
 	 */
 	public synchronized void sortAudioFiles( Sorting requestedSort, ArrayList<AudioFileInfo> toSort )
 	{
-		if( !isAudioFileListLoaded() ) return;
+		if( toSort == null )
+		{
+			if( !isAudioFileListLoaded() ) return;
+			toSort = audioFiles;
+		}
 
 		Comparator<AudioFileInfo> sortingComparator;
 		switch( requestedSort )
@@ -247,7 +321,7 @@ public class NightReader extends Application
 				@Override
 				public int compare( AudioFileInfo lhs, AudioFileInfo rhs )
 				{
-					return lhs.getArtistName().compareTo( rhs.getArtistName() );
+					return lhs.getAlbumName().compareTo( rhs.getAlbumName() );
 				}
 			};
 			break;

@@ -9,11 +9,11 @@ import java.util.ArrayList;
 import mdc.collab.nightreader.R;
 import mdc.collab.nightreader.application.NightReader;
 import mdc.collab.nightreader.application.NightReader.Sorting;
+import mdc.collab.nightreader.util.Audio;
 import mdc.collab.nightreader.util.AudioFileInfo;
 import mdc.collab.nightreader.util.AudioFileInfoAdapter;
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
@@ -26,7 +26,6 @@ public class ListViewActivity extends Activity
 	private static final String TAG = "ListViewActivity";
 	
 	private static NightReader application;
-	private ArrayList<AudioFileInfo> audioFiles;
 	private ListView listView;
 	
 	//controls what level of the list we are on. behaviors such as selecting items & the back button depend on this
@@ -39,6 +38,7 @@ public class ListViewActivity extends Activity
 		setContentView( R.layout.activity_list_view );
 		
 		application = (NightReader) getApplication();
+		final ArrayList<AudioFileInfo> audioFiles = application.getAllAudioFiles();
 		
 		listView = (ListView) findViewById( R.id.AudioListView );
 		listView.setClickable( true );
@@ -62,8 +62,7 @@ public class ListViewActivity extends Activity
 		} );
 		
 		//set up the list
-		audioFiles = application.getAudioFileList();
-		populateListView();
+		populateListView( audioFiles );
 		isMainMenu = true;
 	}
 	
@@ -132,10 +131,10 @@ public class ListViewActivity extends Activity
 	/**
 	 * populates the list view with the titles of the given list of audio files
 	 */
-	private void populateListView()
+	private <E extends Audio> void populateListView( ArrayList<E> audio )
 	{
-		AudioFileInfoAdapter arrayAdapter = new AudioFileInfoAdapter( application );
-        listView.setAdapter(arrayAdapter);
+		AudioFileInfoAdapter arrayAdapter = new AudioFileInfoAdapter( application, audio );
+        listView.setAdapter( arrayAdapter );
         updateButtonIcons();
 	}
 
@@ -146,8 +145,9 @@ public class ListViewActivity extends Activity
 	 */
 	public void sortByTitle( View view )
 	{
-		application.sortAudioFiles( Sorting.SONG );
-		populateListView();
+		ArrayList<AudioFileInfo> allSongs = application.getAllAudioFiles();
+		application.sortAudioFiles( Sorting.SONG, allSongs );
+		populateListView( allSongs );
 	}
 
 
@@ -157,8 +157,8 @@ public class ListViewActivity extends Activity
 	 */
 	public void sortByArtist( View view )
 	{
-		application.sortAudioFiles( Sorting.ARTIST );
-		populateListView();
+		application.sortAudioFiles( Sorting.ARTIST, null );
+		populateListView( application.getArtists() );
 	}
 
 
@@ -167,8 +167,8 @@ public class ListViewActivity extends Activity
 	 */
 	public void sortByAlbum( View view )
 	{
-		application.sortAudioFiles( Sorting.ALBUM );
-		populateListView();
+		application.sortAudioFiles( Sorting.ALBUM, null );
+		populateListView( application.getAlbums() );
 	}
 
 	
@@ -178,7 +178,7 @@ public class ListViewActivity extends Activity
 	 */
 	public void sortByGenre( View view )
 	{
-		application.sortAudioFiles( Sorting.GENRE );
-		populateListView();
+		application.sortAudioFiles( Sorting.GENRE, null );
+		populateListView( application.getAllAudioFiles() );
 	}
 }

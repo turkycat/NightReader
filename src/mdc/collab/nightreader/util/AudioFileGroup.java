@@ -2,14 +2,16 @@ package mdc.collab.nightreader.util;
 
 import java.util.ArrayList;
 
-public class AudioFileGroup
+public class AudioFileGroup implements Audio
 {
-	private String name;
+	private String title;
+	private String subtitle;
 	private ArrayList<AudioFileInfo> items;
 	
-	public AudioFileGroup( String name )
+	public AudioFileGroup( String title, String subtitle )
 	{
-		this.name = name;
+		this.title = title;
+		this.subtitle = subtitle;
 		items = new ArrayList<AudioFileInfo>();
 	}
 	
@@ -35,8 +37,19 @@ public class AudioFileGroup
 	/**
 	 * returns the name of the grouping
 	 */
-	public String getName()
+	@Override
+	public String getTitle()
 	{
-		return name;
+		return title;
+	}
+	
+	
+	/**
+	 * returns the name of the grouping
+	 */
+	@Override
+	public String getSubtitle()
+	{
+		return "";
 	}
 }
