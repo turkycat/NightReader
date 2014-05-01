@@ -60,7 +60,7 @@ public class ListViewActivity extends Activity
 				if( list != null )
 				{
 					lastPositionSelected = position;
-					application.playMedia( list.get( position ) );
+					application.playMedia( list, position );
 					ListViewActivity.this.finish();
 				}
 				else //if( isMainMenu )//&& ( sort == Sorting.ALBUM || sort == Sorting.ARTIST ) )
@@ -246,29 +246,5 @@ public class ListViewActivity extends Activity
 	{
 		application.sortAudioFiles( Sorting.GENRE, null );
 		populateListView( application.getAllAudioFiles() );
-	}
-	
-	
-	public static class SongCompletionListener implements OnCompletionListener
-	{
-
-		@Override
-		public void onCompletion( MediaPlayer mp )
-		{
-			if( list != null )
-			{
-				int next = lastPositionSelected + 1;
-				if( next >= list.size() )
-				{
-					next = 0;
-				}
-				if( next != lastPositionSelected )
-				{
-					application.playMedia( list.get( next ) );
-					lastPositionSelected = next;
-				}
-			}
-		}
-		
 	}
 }

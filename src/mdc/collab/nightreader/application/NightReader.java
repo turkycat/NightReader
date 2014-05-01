@@ -9,13 +9,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-import mdc.collab.nightreader.activities.ListViewActivity;
 import mdc.collab.nightreader.activities.MainActivity;
 import mdc.collab.nightreader.util.AudioFileGroup;
 import mdc.collab.nightreader.util.AudioFileInfo;
 import android.app.Application;
 import android.graphics.Typeface;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 
 /**
  * this class acts very much like a singleton, without the static getInstance
@@ -29,9 +29,8 @@ public class NightReader extends Application
 	//a static reference to the MediaPlayer object that will be used to play media
 	private static MediaPlayer mediaPlayer;
 
-	private Typeface applicationFont;
-	private Sorting sortedBy;
-	private MediaStatus status;
+	//the typeface used throughout this application
+	private static Typeface applicationFont;
 	
 	//a collection of songs
 	private ArrayList<AudioFileInfo> audioFiles;
@@ -41,7 +40,20 @@ public class NightReader extends Application
 	
 	//a collection of albums
 	ArrayList<AudioFileGroup> albums;
+	
+	//the current sorting mode
+	private Sorting sortedBy;
+	
+	//the current status enum of the app
+	private MediaStatus status;
+	
+	//the current playlist
+	private ArrayList<AudioFileInfo> playlist;
+	
+	//the current position within the playlist
+	private int currentPlaylistPosition;
 
+	//the current audio file being played
 	private AudioFileInfo currentAudioFile;
 
 	public enum Sorting
@@ -78,15 +90,21 @@ public class NightReader extends Application
 	/**
 	 * will attempt to load and play the given Uri
 	 */
-	public synchronized void playMedia( AudioFileInfo file )
+	public synchronized void playMedia( ArrayList<AudioFileInfo> list, int position )
 	{
-		if( file == null || file.uri == null ) return;
+		if( list == null || list.size() <= position ) return;
 
+		//stop the current media
 		stopMedia();
+		
+		//update the state-tracking variables
+		playlist = list;
+		currentPlaylistPosition = position;
+		currentAudioFile = list.get( position );
 
-		currentAudioFile = file;
-		MediaPlayer next = MediaPlayer.create( getApplicationContext(), file.uri );
-		next.setOnCompletionListener( new ListViewActivity.SongCompletionListener() );
+		//create the new media player and set up a new completion listener
+		MediaPlayer next = MediaPlayer.create( getApplicationContext(), currentAudioFile.uri );
+		next.setOnCompletionListener( new SongCompletionListener() );
 		mediaPlayer = next;
 
 		status = MediaStatus.PLAYING;
@@ -346,5 +364,55 @@ public class NightReader extends Application
 
 		Collections.sort( audioFiles, sortingComparator );
 		if( toSort == audioFiles ) sortedBy = requestedSort;
+	}
+	
+	
+	private class SongCompletionListener implements OnCompletionListener
+	{
+
+		@Override
+		public void onCompletion( MediaPlayer mp )
+		{
+			if( playlist != null )
+			{
+				int next = currentPlaylistPosition + 1;
+				if( next >= playlist.size() )
+				{
+					next = 0;
+				}
+				if( next != currentPlaylistPosition )
+				{
+					try
+					{
+						mediaPlayer.stop();
+						mediaPlayer.reset();
+						currentAudioFile = playlist.get( next );
+						mediaPlayer.setDataSource( getApplicationContext(), currentAudioFile.uri );
+						mediaPlayer.prepare();
+					}
+					catch( IllegalArgumentException e )
+					{
+						e.printStackTrace();
+					}
+					catch( SecurityException e )
+					{
+						e.printStackTrace();
+					}
+					catch( IllegalStateException e )
+					{
+						e.printStackTrace();
+					}
+					catch( IOException e )
+					{
+						e.printStackTrace();
+					}
+					
+					mediaPlayer.start();
+					MainActivity.onMediaEvent( status );
+					currentPlaylistPosition = next;
+				}
+			}
+		}
+		
 	}
 }
