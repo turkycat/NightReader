@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import mdc.collab.nightreader.R;
 import mdc.collab.nightreader.application.NightReader;
 import mdc.collab.nightreader.application.NightReader.Sorting;
+import mdc.collab.nightreader.singleton.MediaState;
 import mdc.collab.nightreader.util.Audio;
 import mdc.collab.nightreader.util.AudioFileGroup;
 import mdc.collab.nightreader.util.AudioFileInfo;
@@ -56,11 +57,12 @@ public class ListViewActivity extends Activity
 			@Override
 			public void onItemClick( AdapterView<?> adapter, View v, int position, long id )
 			{
-				Sorting sort = application.getSorting();
+				MediaState mediaState = MediaState.getInstance();
+				Sorting sort = mediaState.getSorting();
 				if( list != null )
 				{
 					lastPositionSelected = position;
-					application.playMedia( list, position );
+					mediaState.playMedia( list, position );
 					ListViewActivity.this.finish();
 				}
 				else //if( isMainMenu )//&& ( sort == Sorting.ALBUM || sort == Sorting.ARTIST ) )
@@ -112,9 +114,11 @@ public class ListViewActivity extends Activity
 	{
 		//super.onBackPressed();
 		if( isMainMenu ) finish();
+		
+		//TODO lets make this reset somehow
 		else
 		{
-			switch( application.getSorting() )
+			switch( MediaState.getInstance().getSorting() )
 			{
 			default:
 				sortByTitle( null );
@@ -142,7 +146,7 @@ public class ListViewActivity extends Activity
 		int album = R.drawable.record;
 		int genre = R.drawable.book;
 		
-		switch( application.getSorting() )
+		switch( MediaState.getInstance().getSorting() )
 		{
 		case SONG:
 			song = R.drawable.notes_select;
@@ -190,7 +194,7 @@ public class ListViewActivity extends Activity
 	{
 		isMainMenu = true;
 		ArrayList<AudioFileInfo> allSongs = application.getAllAudioFiles();
-		application.sortAudioFiles( Sorting.SONG, allSongs );
+		NightReader.sortAudioFiles( Sorting.SONG, allSongs );
 		populateListView( allSongs );
 	}
 
@@ -203,7 +207,7 @@ public class ListViewActivity extends Activity
 	{
 		list = null;
 		isMainMenu = true;
-		application.sortAudioFiles( Sorting.ARTIST, null );
+		NightReader.sortAudioFiles( Sorting.ARTIST, null );
 		populateListView( application.getArtists() );
 	}
 
@@ -215,7 +219,7 @@ public class ListViewActivity extends Activity
 	{
 		list = null;
 		isMainMenu = true;
-		application.sortAudioFiles( Sorting.ALBUM, null );
+		NightReader.sortAudioFiles( Sorting.ALBUM, null );
 		populateListView( application.getAlbums() );
 	}
 
@@ -226,7 +230,7 @@ public class ListViewActivity extends Activity
 	 */
 	public void sortByGenre( View view )
 	{
-		application.sortAudioFiles( Sorting.GENRE, null );
+		NightReader.sortAudioFiles( Sorting.GENRE, null );
 		populateListView( application.getAllAudioFiles() );
 	}
 }

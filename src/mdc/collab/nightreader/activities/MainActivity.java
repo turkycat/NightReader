@@ -8,7 +8,8 @@ import java.util.ArrayList;
 
 import mdc.collab.nightreader.R;
 import mdc.collab.nightreader.application.NightReader;
-import mdc.collab.nightreader.application.NightReader.MediaStatus;
+import mdc.collab.nightreader.singleton.MediaState;
+import mdc.collab.nightreader.singleton.MediaState.MediaStatus;
 import mdc.collab.nightreader.util.AudioFileInfo;
 import android.app.Activity;
 import android.app.Service;
@@ -23,7 +24,6 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnCompletionListener;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -235,7 +235,7 @@ public class MainActivity extends Activity implements SensorEventListener
 			gravity[2] = alpha * gravity[2] + ( 1 - alpha ) * event.values[2];
 			
 			//we can stop here if we aren't playing any music
-			if( !application.isMediaPlaying() ) return;
+			if( !MediaState.getInstance().isMediaPlaying() ) return;
 
 			// Remove the gravity contribution with the high-pass filter.
 			x = event.values[0] - gravity[0];
@@ -259,7 +259,7 @@ public class MainActivity extends Activity implements SensorEventListener
 			//check if we've reached the cutoff point
 			if( currentTime - lastSignificantEvent > AUDIO_CUTOFF_MILLIS )
 			{
-				application.stopMedia();
+				MediaState.getInstance().stopMedia();
 				mainInfoText.setText( "Media paused" );
 			}
 			else
@@ -301,7 +301,7 @@ public class MainActivity extends Activity implements SensorEventListener
 			
 		case PLAYING:
 			//set the song information texts to the selected media file
-			AudioFileInfo file = application.getCurrentAudioFile();
+			AudioFileInfo file = MediaState.getInstance().getCurrentAudioFile();
 			mainAudioText.setText( file.getSongTitle() );
 			subAudioText.setText( file.getArtistName() );
 			
@@ -311,7 +311,7 @@ public class MainActivity extends Activity implements SensorEventListener
 			playButton.setEnabled( true );
 			
 			//set the progress bar's new max, in seconds
-			progressBar.setMax( application.getCurrentMediaPlayer().getDuration() / 1000 );
+			progressBar.setMax( MediaState.getInstance().getCurrentMediaPlayer().getDuration() / 1000 );
 			
 			//select the album art if possible
 			Bitmap albumArt = file.getAlbumArt( application.getApplicationContext() );
@@ -349,8 +349,8 @@ public class MainActivity extends Activity implements SensorEventListener
 	 */
 	public void PlayPauseEvent( View view )
 	{
-		application.pauseOrResumeMedia();
-		setPlayPauseButton( application.isMediaPlaying() );
+		MediaState.getInstance().pauseOrResumeMedia();
+		setPlayPauseButton( MediaState.getInstance().isMediaPlaying() );
 	}
 	
 	
@@ -359,7 +359,7 @@ public class MainActivity extends Activity implements SensorEventListener
 	 */
 	public void StopEvent( View view )
 	{
-		application.stopMedia();
+		MediaState.getInstance().stopMedia();
 	}
 	
 	
@@ -382,7 +382,7 @@ public class MainActivity extends Activity implements SensorEventListener
 			sensorButton.setBackgroundResource( R.drawable.sensor_disabled );
 			Toast.makeText( getApplicationContext(), "sensor disabled", Toast.LENGTH_LONG ).show();
 			mainInfoText.setVisibility( View.INVISIBLE );
-//			if( application.isMediaPlaying() )
+//			if( MediaState.getInstance().isMediaPlaying() )
 //			{
 //				mainInfoText.setText( "sensor disabled" );
 //			}
@@ -577,9 +577,10 @@ public class MainActivity extends Activity implements SensorEventListener
 			{
 				synchronized( MainActivity.this )
 				{
-					if( application.isMediaPlaying() )
+					MediaState instance = MediaState.getInstance();
+					if( instance.isMediaPlaying() )
 					{
-						MediaPlayer player = application.getCurrentMediaPlayer();
+						MediaPlayer player = instance.getCurrentMediaPlayer();
 						progressBar.setProgress( player.getCurrentPosition() / 1000 );
 					}
 					else

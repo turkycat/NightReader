@@ -4,31 +4,29 @@ package mdc.collab.nightreader.application;
  * @author Jesse Frush
  */
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-import mdc.collab.nightreader.activities.MainActivity;
+import mdc.collab.nightreader.singleton.MediaState;
 import mdc.collab.nightreader.util.AudioFileGroup;
 import mdc.collab.nightreader.util.AudioFileInfo;
 import android.app.Application;
 import android.graphics.Typeface;
-import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnCompletionListener;
 
 /**
- * this class acts very much like a singleton, without the static getInstance
- * method. it is an extension of the Application class
- * 
+ * this class serves like an umbrella over the other activities. It's properties
+ * 	dictate behavior of subtasks/threads 
  * @author Jesse Frush
  * 
  */
 public class NightReader extends Application
 {
-	//a static reference to the MediaPlayer object that will be used to play media
-	private static MediaPlayer mediaPlayer;
-
+	public enum Sorting
+	{
+		NONE, SONG, ARTIST, ALBUM, GENRE
+	};
+	
 	//the typeface used throughout this application
 	private static Typeface applicationFont;
 	
@@ -40,150 +38,22 @@ public class NightReader extends Application
 	
 	//a collection of albums
 	ArrayList<AudioFileGroup> albums;
-	
-	//the current sorting mode
-	private Sorting sortedBy;
-	
-	//the current status enum of the app
-	private MediaStatus status;
-	
-	//the current playlist
-	private ArrayList<AudioFileInfo> playlist;
-	
-	//the current position within the playlist
-	private int currentPlaylistPosition;
 
-	//the current audio file being played
-	private AudioFileInfo currentAudioFile;
-
-	public enum Sorting
-	{
-		NONE, SONG, ARTIST, ALBUM, GENRE
-	};
-
-	public enum MediaStatus
-	{
-		NONE, PLAYING, PAUSED, STOP
-	};
-
+	
 	@Override
 	public void onCreate()
 	{
 		super.onCreate();
+		
+		MediaState.setContext( getApplicationContext() );
 
 		applicationFont = Typeface.createFromAsset( getAssets(), "fonts/ABANDON.TTF" );
 		//		applicationFont = Typeface.createFromAsset( getAssets(), "fonts/bellerose.ttf" );
 		//		applicationFont = Typeface.createFromAsset( getAssets(), "fonts/nougat.ttf" );
-		sortedBy = Sorting.NONE;
-		status = MediaStatus.NONE;
-		currentAudioFile = null;
-	}
-
-	/**
-	 * returns the current audio file being played
-	 */
-	public synchronized AudioFileInfo getCurrentAudioFile()
-	{
-		return currentAudioFile;
-	}
-
-	/**
-	 * will attempt to load and play the given Uri
-	 */
-	public synchronized void playMedia( ArrayList<AudioFileInfo> list, int position )
-	{
-		if( list == null || list.size() <= position ) return;
-
-		//stop the current media
-		stopMedia();
-		
-		//update the state-tracking variables
-		playlist = list;
-		currentPlaylistPosition = position;
-		currentAudioFile = list.get( position );
-
-		//create the new media player and set up a new completion listener
-		MediaPlayer next = MediaPlayer.create( getApplicationContext(), currentAudioFile.uri );
-		next.setOnCompletionListener( new SongCompletionListener() );
-		mediaPlayer = next;
-
-		status = MediaStatus.PLAYING;
-		MainActivity.onMediaEvent( status );
-		mediaPlayer.start();
-	}
-
-	
-	/**
-	 * stops the active player, if necessary
-	 */
-	public synchronized void stopMedia()
-	{
-		if( mediaPlayer != null )
-		{
-			mediaPlayer.stop();
-
-			status = MediaStatus.STOP;
-			MainActivity.onMediaEvent( status );
-		}
-	}
-
-	/**
-	 * stops the active player, if necessary
-	 */
-	public synchronized void pauseOrResumeMedia()
-	{
-		if( mediaPlayer == null ) return;
-
-		if( mediaPlayer.isPlaying() && status == MediaStatus.PLAYING )
-		{
-			mediaPlayer.pause();
-			MainActivity.onMediaEvent( MediaStatus.PAUSED );
-			status = MediaStatus.PAUSED;
-		}
-		else
-		{
-			if( status == MediaStatus.STOP )
-			{
-				try
-				{
-					mediaPlayer.prepare();
-				}
-				catch( IllegalStateException e )
-				{
-					//do nothing
-					//e.printStackTrace();
-				}
-				catch( IOException e )
-				{
-					//do nothing
-					//e.printStackTrace();
-				}
-				mediaPlayer.seekTo( 0 );
-			}
-
-			mediaPlayer.start();
-			MainActivity.onMediaEvent( MediaStatus.PLAYING );
-			status = MediaStatus.PLAYING;
-		}
 	}
 	
 	
-	/**
-	 * returns true if the mediaplayer is currently active and playing
-	 */
-	public synchronized boolean isMediaPlaying()
-	{
-		return mediaPlayer != null && mediaPlayer.isPlaying();
-	}
-
-	/**
-	 * returns the current percentage of the song being played
-	 */
-	public synchronized MediaPlayer getCurrentMediaPlayer()
-	{
-		return mediaPlayer;
-	}
-
+	
 	/**
 	 * sets the current application's audio file list to the given list
 	 */
@@ -293,24 +163,12 @@ public class NightReader extends Application
 	}
 
 	/**
-	 * returns the sorting type which the audio files are currently arranged by
-	 */
-	public synchronized Sorting getSorting()
-	{
-		return sortedBy;
-	}
-
-	/**
 	 * sorts the list of songs given a requested sorting type
 	 */
-	public synchronized void sortAudioFiles( Sorting requestedSort, ArrayList<AudioFileInfo> toSort )
+	public static void sortAudioFiles( Sorting requestedSort, ArrayList<AudioFileInfo> toSort )
 	{
-		if( toSort == null )
-		{
-			if( !isAudioFileListLoaded() ) return;
-			toSort = audioFiles;
-		}
-
+		if( toSort == null ) return;
+		
 		Comparator<AudioFileInfo> sortingComparator;
 		switch( requestedSort )
 		{
@@ -363,57 +221,10 @@ public class NightReader extends Application
 
 		}
 
-		Collections.sort( audioFiles, sortingComparator );
-		if( toSort == audioFiles ) sortedBy = requestedSort;
+		Collections.sort( toSort, sortingComparator );
 	}
 	
 	
-	private class SongCompletionListener implements OnCompletionListener
-	{
-
-		@Override
-		public void onCompletion( MediaPlayer mp )
-		{
-			if( playlist != null )
-			{
-				int next = currentPlaylistPosition + 1;
-				if( next >= playlist.size() )
-				{
-					next = 0;
-				}
-				if( next != currentPlaylistPosition )
-				{
-					try
-					{
-						mediaPlayer.stop();
-						mediaPlayer.reset();
-						currentAudioFile = playlist.get( next );
-						mediaPlayer.setDataSource( getApplicationContext(), currentAudioFile.uri );
-						mediaPlayer.prepare();
-					}
-					catch( IllegalArgumentException e )
-					{
-						e.printStackTrace();
-					}
-					catch( SecurityException e )
-					{
-						e.printStackTrace();
-					}
-					catch( IllegalStateException e )
-					{
-						e.printStackTrace();
-					}
-					catch( IOException e )
-					{
-						e.printStackTrace();
-					}
-					
-					mediaPlayer.start();
-					MainActivity.onMediaEvent( status );
-					currentPlaylistPosition = next;
-				}
-			}
-		}
+	
 		
-	}
 }
