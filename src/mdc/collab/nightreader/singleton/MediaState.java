@@ -9,6 +9,7 @@ import mdc.collab.nightreader.util.AudioFileInfo;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
+import android.net.Uri;
 
 /**
  * A singleton class which maintains the overall state of audio-related media
@@ -62,8 +63,9 @@ public class MediaState
 		//update the state-tracking variables
 		playlist = list;
 		currentPlaylistPosition = position;
-		currentAudioFile = list.get( position );
 
+		initializeAndPlayMedia( position);
+				
 		status = MediaStatus.PLAYING;
 		
 		//TODO
@@ -175,6 +177,37 @@ public class MediaState
 	
 	
 	/**
+	 * a helper method which will initialize and play a media file
+	 */
+	private void initializeAndPlayMedia( int position )
+	{
+		currentAudioFile = playlist.get( position );
+		try
+		{
+			mediaPlayer.setDataSource( context, currentAudioFile.uri );
+			mediaPlayer.prepare();
+			mediaPlayer.start();
+		}
+		catch( IllegalArgumentException e )
+		{
+			e.printStackTrace();
+		}
+		catch( SecurityException e )
+		{
+			e.printStackTrace();
+		}
+		catch( IllegalStateException e )
+		{
+			e.printStackTrace();
+		}
+		catch( IOException e )
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	
+	/**
 	 * receives callbacks & sets up the next song in the playlist depending
 	 * 	on the current state of media
 	 */
@@ -193,30 +226,24 @@ public class MediaState
 				}
 				if( next != currentPlaylistPosition )
 				{
-					try
-					{
+//					try
+//					{
 						mediaPlayer.stop();
 						mediaPlayer.reset();
-						currentAudioFile = playlist.get( next );
-						mediaPlayer.setDataSource( context, currentAudioFile.uri );
-						mediaPlayer.prepare();
-					}
-					catch( IllegalArgumentException e )
-					{
-						e.printStackTrace();
-					}
-					catch( SecurityException e )
-					{
-						e.printStackTrace();
-					}
-					catch( IllegalStateException e )
-					{
-						e.printStackTrace();
-					}
-					catch( IOException e )
-					{
-						e.printStackTrace();
-					}
+						initializeAndPlayMedia( next );
+//					}
+//					catch( IllegalArgumentException e )
+//					{
+//						e.printStackTrace();
+//					}
+//					catch( SecurityException e )
+//					{
+//						e.printStackTrace();
+//					}
+//					catch( IllegalStateException e )
+//					{
+//						e.printStackTrace();
+//					}
 					
 					mediaPlayer.start();
 					MainActivity.onMediaEvent( status );
@@ -227,6 +254,13 @@ public class MediaState
 	}
 
 
+	
+	
+	
+	
+	
+	
+	
 	//--------------------------------------------------------------singleton pattern
 
 	public static MediaState getInstance()
@@ -259,6 +293,7 @@ public class MediaState
 		status = MediaStatus.NONE;
 		sorting = Sorting.NONE;
 		currentAudioFile = null;
+		playlist = null;
 		currentPlaylistPosition = -1;
 	}
 }
