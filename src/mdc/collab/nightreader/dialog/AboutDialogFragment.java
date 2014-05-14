@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -35,6 +36,9 @@ public class AboutDialogFragment extends DialogFragment
 //		} );
 		
 		// Create the AlertDialog object and return it
-		return builder.create();
+		Dialog dialog = builder.create();
+		dialog.getWindow().setBackgroundDrawable( new ColorDrawable( 0 ) );
+		
+		return dialog;
 	}
 }

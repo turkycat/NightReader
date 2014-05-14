@@ -33,7 +33,7 @@ public class MediaState
 	private static Context context;
 
 	//the current status of the application's media player
-	private MediaStatus status;
+	//private MediaStatus status;
 
 	//the current playlist
 	private ArrayList<AudioFileInfo> playlist;
@@ -43,6 +43,8 @@ public class MediaState
 
 	//the current position within the playlist
 	private int currentPlaylistPosition;
+	
+	private boolean isPaused = false;
 	
 	//-------------------------------------------------------------------------media related methods
 
@@ -62,7 +64,7 @@ public class MediaState
 
 		initializeAndPlayMedia( position);
 				
-		status = MediaStatus.PLAYING;
+		//status = MediaStatus.PLAYING;
 		
 		MainActivity.resetUI();
 	}
@@ -77,35 +79,44 @@ public class MediaState
 		{
 			mediaPlayer.stop();
 			mediaPlayer.reset();
-			status = MediaStatus.STOP;
+			isPaused = false;
+			//status = MediaStatus.STOP;
 			MainActivity.resetUI();
 		}
 	}
 
 	/**
 	 * stops the active player, if necessary
+	 * @return true if the player is now paused, false otherwise
 	 */
-	public synchronized void pauseOrResumeMedia()
+	public synchronized boolean pauseOrResumeMedia()
 	{
-		if( mediaPlayer == null ) return;
+		if( mediaPlayer == null ) return false;
 
-		if( mediaPlayer.isPlaying() && status == MediaStatus.PLAYING )
+		if( mediaPlayer.isPlaying() )// && status == MediaStatus.PLAYING )
 		{
 			mediaPlayer.pause();
-			status = MediaStatus.PAUSED;
+			isPaused = true;
+			//status = MediaStatus.PAUSED;
+		}
+		else if( isPaused )
+		{
+			mediaPlayer.start();
+			isPaused = false;
+			//if( status == MediaStatus.STOP )
+			//{
+			//stopMedia();
+				//initializeAndPlayMedia( currentPlaylistPosition );
+			//}
+			//status = MediaStatus.PLAYING;
 		}
 		else
 		{
-			if( status == MediaStatus.STOP )
-			{
-				initializeAndPlayMedia( currentPlaylistPosition );
-			}
-
-			mediaPlayer.start();
-			status = MediaStatus.PLAYING;
+			initializeAndPlayMedia( currentPlaylistPosition );
 		}
 		
 		MainActivity.resetUI();
+		return isPaused;
 	}
 	
 	
@@ -222,6 +233,7 @@ public class MediaState
 			mediaPlayer.setDataSource( context, currentAudioFile.uri );
 			mediaPlayer.prepare();
 			mediaPlayer.start();
+			isPaused = false;
 		}
 		catch( IllegalArgumentException e )
 		{
@@ -283,7 +295,7 @@ public class MediaState
 				nextTrack();
 			}
 		} );
-		status = MediaStatus.NONE;
+		//status = MediaStatus.NONE;
 		currentAudioFile = null;
 		playlist = null;
 		currentPlaylistPosition = -1;

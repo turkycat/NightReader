@@ -103,8 +103,8 @@ public class MainActivity extends Activity implements SensorEventListener
 	//the state of the sensor
 	private static boolean sensorEnabled;
 	
-	//the state of the pause button
-	private static boolean isPaused = false;
+//	//the state of the pause button
+//	private static boolean isPaused = false;
 	
 	private static DialogFragment dialog;
 
@@ -262,18 +262,18 @@ public class MainActivity extends Activity implements SensorEventListener
 	public void playPauseEvent( View view )
 	{
 		//invoke the play/pause method on the mediastate object
-		MediaState.getInstance().pauseOrResumeMedia();
+		boolean paused = MediaState.getInstance().pauseOrResumeMedia();
 
 		//then set the play/pause button image according to the new state of the media
-		if( MediaState.getInstance().isMediaPlaying() )
+		if( paused )
 		{
-			isPaused = false;
-			playButton.setBackgroundResource( R.drawable.pause_enabled );
+//			isPaused = true;
+			playButton.setBackgroundResource( R.drawable.play_enabled );
 		}
 		else
 		{
-			isPaused = true;
-			playButton.setBackgroundResource( R.drawable.play_enabled );
+//			isPaused = false;
+			playButton.setBackgroundResource( R.drawable.pause_enabled );
 		}
 		
 		resetUI();
@@ -285,7 +285,7 @@ public class MainActivity extends Activity implements SensorEventListener
 	public void stopEvent( View view )
 	{
 		MediaState.getInstance().stopMedia();
-		isPaused = false;
+		//isPaused = false;
 	}
 
 	/**
@@ -294,7 +294,7 @@ public class MainActivity extends Activity implements SensorEventListener
 	public void nextEvent( View view )
 	{
 		MediaState.getInstance().nextTrack();
-		isPaused = false;
+		//isPaused = false;
 	}
 
 	/**
@@ -303,7 +303,7 @@ public class MainActivity extends Activity implements SensorEventListener
 	public void previousEvent( View view )
 	{
 		MediaState.getInstance().previousTrack();
-		isPaused = false;
+		//isPaused = false;
 	}
 	
 	
@@ -483,7 +483,7 @@ public class MainActivity extends Activity implements SensorEventListener
 	 */
 	private static void resetStopButton()
 	{
-		boolean enabled = MediaState.getInstance().isMediaPlaying() || isPaused;
+		boolean enabled = MediaState.getInstance().isMediaPlaying();// || isPaused;
 		stopButton.setEnabled( enabled );
 
 		if( enabled )
