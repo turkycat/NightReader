@@ -158,6 +158,8 @@ public class MainActivity extends Activity implements SensorEventListener
 
 		SongStatusThread thread = new SongStatusThread();
 		thread.start();
+		
+		resetUI();
 	}
 
 	/**
@@ -214,101 +216,6 @@ public class MainActivity extends Activity implements SensorEventListener
 	public void onBackPressed()
 	{
 		moveTaskToBack( true );
-	}
-	
-	
-	
-	
-
-	//-----------------------------------------------------accelerometer & other sensor related methods
-
-	/**
-	 * initializes the sensors, currently just the accelerometer
-	 */
-	public void initializeSensors()
-	{
-		//grab a reference to the framework's pre-built sensor service object
-		sensorManager = (SensorManager) getSystemService( Service.SENSOR_SERVICE );
-
-		//grab a reference to the Accelerometer, which is of type Sensor
-		accelerometer = sensorManager.getDefaultSensor( Sensor.TYPE_ACCELEROMETER );
-
-		//register this class (implements SensorEventListener) to the SensorManager built into the framework.
-		sensorManager.registerListener( this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL );
-
-		sensorEnabled = true;
-		sensorButton.setBackgroundResource( R.drawable.sensor_enabled );
-	}
-
-	@Override
-	public void onAccuracyChanged( Sensor arg0, int arg1 )
-	{
-		//nothing to do here
-	}
-
-	@Override
-	public void onSensorChanged( SensorEvent event )
-	{
-		if( !sensorEnabled ) return;
-
-		//this should be the only event type we get callbacks for, but we will type check for safety
-		if( event.sensor.getType() == Sensor.TYPE_ACCELEROMETER )
-		{
-			float x, y, z;
-
-			//this method doesn't account for gravity, which essentially adds 9.81 m/s^2 when stationary, so less desirable.
-			//			x = event.values[0];
-			//			y = event.values[1];
-			//			z = event.values[2];
-
-			//from the Google high/low pass filter example:
-
-			// In this example, alpha is calculated as t / (t + dT),
-			// where t is the low-pass filter's time-constant and
-			// dT is the event delivery rate.
-
-			final float alpha = 0.8f;
-
-			// Isolate the force of gravity with the low-pass filter.
-			gravity[0] = alpha * gravity[0] + ( 1 - alpha ) * event.values[0];
-			gravity[1] = alpha * gravity[1] + ( 1 - alpha ) * event.values[1];
-			gravity[2] = alpha * gravity[2] + ( 1 - alpha ) * event.values[2];
-
-			//we can stop here if we aren't playing any music
-			if( !MediaState.getInstance().isMediaPlaying() ) return;
-
-			// Remove the gravity contribution with the high-pass filter.
-			x = event.values[0] - gravity[0];
-			y = event.values[1] - gravity[1];
-			z = event.values[2] - gravity[2];
-
-			//the first method shows the innaccuracy
-			double magnitude = Math.sqrt( ( x * x ) + ( y * y ) + ( z * z ) );
-
-			long currentTime = System.currentTimeMillis();
-			long elapsedTime = currentTime - lastSignificantEvent;
-			Log.i( TAG, "mag: " + magnitude + " elapsed: " + elapsedTime );
-			//infoText.setText( "" + magnitude );
-
-			//keep audio alive if movment events are detected
-			if( magnitude > MOVEMENT_SIGNIFICANCE_THRESHOLD )
-			{
-				lastSignificantEvent = currentTime;
-			}
-
-			//check if we've reached the cutoff point
-			if( currentTime - lastSignificantEvent > AUDIO_CUTOFF_MILLIS )
-			{
-				MediaState.getInstance().stopMedia();
-				mainInfoText.setText( "Media paused" );
-			}
-			else
-			{
-				int seconds = (int) elapsedTime / 1000;
-				int totalSeconds = (int) AUDIO_CUTOFF_MILLIS / 1000;
-				if( sensorEnabled ) mainInfoText.setText( "" + ( totalSeconds - seconds ) + " until pause" );
-			}
-		}
 	}
 	
 	
@@ -391,6 +298,101 @@ public class MainActivity extends Activity implements SensorEventListener
 			sensorButton.setBackgroundResource( R.drawable.sensor_disabled );
 			Toast.makeText( getApplicationContext(), "sensor disabled", Toast.LENGTH_LONG ).show();
 			mainInfoText.setVisibility( View.INVISIBLE );
+		}
+	}
+	
+	
+	
+	
+
+	//-----------------------------------------------------accelerometer & other sensor related methods
+
+	/**
+	 * initializes the sensors, currently just the accelerometer
+	 */
+	private void initializeSensors()
+	{
+		//grab a reference to the framework's pre-built sensor service object
+		sensorManager = (SensorManager) getSystemService( Service.SENSOR_SERVICE );
+
+		//grab a reference to the Accelerometer, which is of type Sensor
+		accelerometer = sensorManager.getDefaultSensor( Sensor.TYPE_ACCELEROMETER );
+
+		//register this class (implements SensorEventListener) to the SensorManager built into the framework.
+		sensorManager.registerListener( this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL );
+
+		sensorEnabled = true;
+		sensorButton.setBackgroundResource( R.drawable.sensor_enabled );
+	}
+
+	@Override
+	public void onAccuracyChanged( Sensor arg0, int arg1 )
+	{
+		//nothing to do here
+	}
+
+	@Override
+	public void onSensorChanged( SensorEvent event )
+	{
+		if( !sensorEnabled ) return;
+
+		//this should be the only event type we get callbacks for, but we will type check for safety
+		if( event.sensor.getType() == Sensor.TYPE_ACCELEROMETER )
+		{
+			float x, y, z;
+
+			//this method doesn't account for gravity, which essentially adds 9.81 m/s^2 when stationary, so less desirable.
+			//			x = event.values[0];
+			//			y = event.values[1];
+			//			z = event.values[2];
+
+			//from the Google high/low pass filter example:
+
+			// In this example, alpha is calculated as t / (t + dT),
+			// where t is the low-pass filter's time-constant and
+			// dT is the event delivery rate.
+
+			final float alpha = 0.8f;
+
+			// Isolate the force of gravity with the low-pass filter.
+			gravity[0] = alpha * gravity[0] + ( 1 - alpha ) * event.values[0];
+			gravity[1] = alpha * gravity[1] + ( 1 - alpha ) * event.values[1];
+			gravity[2] = alpha * gravity[2] + ( 1 - alpha ) * event.values[2];
+
+			//we can stop here if we aren't playing any music
+			if( !MediaState.getInstance().isMediaPlaying() ) return;
+
+			// Remove the gravity contribution with the high-pass filter.
+			x = event.values[0] - gravity[0];
+			y = event.values[1] - gravity[1];
+			z = event.values[2] - gravity[2];
+
+			//the first method shows the innaccuracy
+			double magnitude = Math.sqrt( ( x * x ) + ( y * y ) + ( z * z ) );
+
+			long currentTime = System.currentTimeMillis();
+			long elapsedTime = currentTime - lastSignificantEvent;
+			Log.i( TAG, "mag: " + magnitude + " elapsed: " + elapsedTime );
+			//infoText.setText( "" + magnitude );
+
+			//keep audio alive if movment events are detected
+			if( magnitude > MOVEMENT_SIGNIFICANCE_THRESHOLD )
+			{
+				lastSignificantEvent = currentTime;
+			}
+
+			//check if we've reached the cutoff point
+			if( currentTime - lastSignificantEvent > AUDIO_CUTOFF_MILLIS )
+			{
+				MediaState.getInstance().stopMedia();
+				mainInfoText.setText( "Media paused" );
+			}
+			else
+			{
+				int seconds = (int) elapsedTime / 1000;
+				int totalSeconds = (int) AUDIO_CUTOFF_MILLIS / 1000;
+				if( sensorEnabled ) mainInfoText.setText( "" + ( totalSeconds - seconds ) + " until pause" );
+			}
 		}
 	}
 	

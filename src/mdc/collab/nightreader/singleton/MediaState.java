@@ -251,23 +251,6 @@ public class MediaState
 	}
 	
 	
-	/**
-	 * receives callbacks & sets up the next song in the playlist depending
-	 * 	on the current state of media
-	 */
-	private class SongCompletionListener implements OnCompletionListener
-	{
-
-		@Override
-		public void onCompletion( MediaPlayer mp )
-		{
-			nextTrack();
-		}
-	}
-
-
-	
-	
 	
 	
 	
@@ -301,7 +284,14 @@ public class MediaState
 	private MediaState()
 	{
 		mediaPlayer = new MediaPlayer();
-		mediaPlayer.setOnCompletionListener( new SongCompletionListener() );
+		mediaPlayer.setOnCompletionListener( new OnCompletionListener()
+		{
+			@Override
+			public void onCompletion( MediaPlayer mp )
+			{
+				nextTrack();
+			}
+		} );
 		status = MediaStatus.NONE;
 		sorting = Sorting.NONE;
 		currentAudioFile = null;
