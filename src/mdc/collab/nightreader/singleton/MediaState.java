@@ -59,12 +59,10 @@ public class MediaState
 		
 		//update the state-tracking variables
 		playlist = list;
-		currentPlaylistPosition = position;
 
 		initializeAndPlayMedia( position);
 				
 		status = MediaStatus.PLAYING;
-		mediaPlayer.start();
 		
 		MainActivity.resetUI();
 	}
@@ -78,6 +76,7 @@ public class MediaState
 		if( mediaPlayer.isPlaying() )
 		{
 			mediaPlayer.stop();
+			mediaPlayer.reset();
 			status = MediaStatus.STOP;
 			MainActivity.resetUI();
 		}
@@ -99,21 +98,7 @@ public class MediaState
 		{
 			if( status == MediaStatus.STOP )
 			{
-				try
-				{
-					mediaPlayer.prepare();
-				}
-				catch( IllegalStateException e )
-				{
-					//do nothing
-					//e.printStackTrace();
-				}
-				catch( IOException e )
-				{
-					//do nothing
-					//e.printStackTrace();
-				}
-				mediaPlayer.seekTo( 0 );
+				initializeAndPlayMedia( currentPlaylistPosition );
 			}
 
 			mediaPlayer.start();
@@ -127,7 +112,7 @@ public class MediaState
 	/**
 	 * advances the playlist to the next track
 	 */
-	public void nextTrack()
+	public synchronized void nextTrack()
 	{
 		if( playlist != null )
 		{
@@ -153,7 +138,7 @@ public class MediaState
 	/**
 	 * returns the playlist to the previous track
 	 */
-	public void previousTrack()
+	public synchronized void previousTrack()
 	{
 		if( playlist != null )
 		{
@@ -186,6 +171,14 @@ public class MediaState
 	public synchronized boolean isMediaPlaying()
 	{
 		return mediaPlayer != null && mediaPlayer.isPlaying();
+	}
+	
+	/**
+	 * returns true if the mediaplayer is currently active and playing
+	 */
+	public synchronized boolean isPlaylistLoaded()
+	{
+		return playlist != null;
 	}
 	
 
@@ -222,6 +215,7 @@ public class MediaState
 	 */
 	private void initializeAndPlayMedia( int position )
 	{
+		currentPlaylistPosition = position;
 		currentAudioFile = playlist.get( position );
 		try
 		{

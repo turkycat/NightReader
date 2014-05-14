@@ -501,7 +501,7 @@ public class MainActivity extends Activity implements SensorEventListener
 	 */
 	private static void resetNextButton()
 	{
-		boolean enabled = MediaState.getInstance().isMediaPlaying() || isPaused;
+		boolean enabled = MediaState.getInstance().isPlaylistLoaded();
 		nextButton.setEnabled( enabled );
 
 		if( enabled )
@@ -519,7 +519,7 @@ public class MainActivity extends Activity implements SensorEventListener
 	 */
 	private static void resetPreviousButton()
 	{
-		boolean enabled = MediaState.getInstance().isMediaPlaying() || isPaused;
+		boolean enabled = MediaState.getInstance().isPlaylistLoaded();
 		previousButton.setEnabled( enabled );
 
 		if( enabled )
