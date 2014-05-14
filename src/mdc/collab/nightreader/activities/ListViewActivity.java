@@ -169,7 +169,7 @@ public class ListViewActivity extends Activity
 	 */
 	private <E extends Audio> void populateListView( ArrayList<E> audio )
 	{
-		AudioFileInfoAdapter arrayAdapter = new AudioFileInfoAdapter( application, audio );
+		AudioFileInfoAdapter arrayAdapter = new AudioFileInfoAdapter( this.getBaseContext(), audio );
         listView.setAdapter( arrayAdapter );
         updateButtonIcons();
 	}

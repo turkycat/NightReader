@@ -21,12 +21,14 @@ public class AudioFileInfoAdapter<E extends ArrayList<Audio>> extends BaseAdapte
 	private LayoutInflater mInflater;
 	
 	private ArrayList<Audio> list;
+	
+	private static int selectedItem = -1;
 
-	public AudioFileInfoAdapter( NightReader app, ArrayList<Audio> list )
+	public AudioFileInfoAdapter( Context context, ArrayList<Audio> list )
 	{
 		//application = app;
 		this.list = list;
-		this.mInflater = LayoutInflater.from( app.getApplicationContext() );
+		this.mInflater = LayoutInflater.from( context );
 	}
 
 	@Override
@@ -97,6 +99,8 @@ public class AudioFileInfoAdapter<E extends ArrayList<Audio>> extends BaseAdapte
 
 		return convertView;
 	}
+	
+	
 
 	static class ViewHolder
 	{

@@ -100,7 +100,10 @@ public class MainActivity extends Activity implements SensorEventListener
 	private static Sensor accelerometer;
 
 	//the state of the sensor
-	private boolean sensorEnabled;
+	private static boolean sensorEnabled;
+	
+	//the state of the pause button
+	private static boolean isPaused = false;
 
 	//accounts for gravity
 	float[] gravity;
@@ -459,7 +462,7 @@ public class MainActivity extends Activity implements SensorEventListener
 	 */
 	private static void resetStopButton()
 	{
-		boolean enabled = MediaState.getInstance().isMediaPlaying();
+		boolean enabled = MediaState.getInstance().isMediaPlaying() || isPaused;
 		stopButton.setEnabled( enabled );
 
 		if( enabled )
@@ -477,7 +480,7 @@ public class MainActivity extends Activity implements SensorEventListener
 	 */
 	private static void resetNextButton()
 	{
-		boolean enabled = MediaState.getInstance().isMediaPlaying();
+		boolean enabled = MediaState.getInstance().isMediaPlaying() || isPaused;
 		nextButton.setEnabled( enabled );
 
 		if( enabled )
@@ -495,7 +498,7 @@ public class MainActivity extends Activity implements SensorEventListener
 	 */
 	private static void resetPreviousButton()
 	{
-		boolean enabled = MediaState.getInstance().isMediaPlaying();
+		boolean enabled = MediaState.getInstance().isMediaPlaying() || isPaused;
 		previousButton.setEnabled( enabled );
 
 		if( enabled )
