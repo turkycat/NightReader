@@ -33,11 +33,11 @@ public class ListViewActivity extends Activity
 	//the current list of items being displayed
 	private static ArrayList<AudioFileInfo> list;
 	
+	//a state variable for the current sorting mode
+	private static SortingMode mode = SortingMode.SONG;
+	
 	//controls what level of the list we are on. behaviors such as selecting items & the back button depend on this
 	private boolean isMainMenu;
-	
-	//a state variable for the current sorting mode
-	private SortingMode mode = SortingMode.SONG;
 	
 	@Override
 	protected void onCreate( Bundle savedInstanceState )
@@ -67,7 +67,6 @@ public class ListViewActivity extends Activity
 			isMainMenu = false;
 		}
 
-		
 		switch( mode )
 		{
 		default:
