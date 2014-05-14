@@ -46,43 +46,60 @@
     </LinearLayout>
 
     <RelativeLayout
-        android:id="@+id/mainactivity_control_layout"
+        android:id="@+id/mainactivity_button_bar"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2" >
+        android:layout_weight="2"
+        android:layout_marginTop="10dp" >
 
         <Button
             android:id="@+id/mainactivity_loadbutton"
-            style="@style/ButtonTheme"
+            style="@style/ButtonBarTheme"
             android:layout_alignParentLeft="true"
             android:background="@drawable/eject"
             android:enabled="false"
             android:maxLines="1"
-            android:onClick="EjectButtonEvent" />
+            android:onClick="ejectEvent" />
 
         <Button
             android:id="@+id/mainactivity_playpausebutton"
-            style="@style/ButtonTheme"
+            style="@style/ButtonBarTheme"
             android:layout_toRightOf="@id/mainactivity_loadbutton"
             android:background="@drawable/play"
             android:enabled="false"
-            android:onClick="PlayPauseEvent" />
+            android:onClick="playPauseEvent" />
+
+        <Button
+            android:id="@+id/mainactivity_previousbutton"
+            style="@style/ButtonBarTheme"
+            android:layout_toRightOf="@id/mainactivity_playpausebutton"
+            android:background="@drawable/previous"
+            android:enabled="false"
+            android:onClick="previousEvent" />
+
+        <Button
+            android:id="@+id/mainactivity_nextbutton"
+            style="@style/ButtonBarTheme"
+            android:layout_toRightOf="@id/mainactivity_previousbutton"
+            android:background="@drawable/next"
+            android:enabled="false"
+            android:onClick="nextEvent" />
 
         <Button
             android:id="@+id/mainactivity_stopbutton"
-            style="@style/ButtonTheme"
-            android:layout_toRightOf="@id/mainactivity_playpausebutton"
+            style="@style/ButtonBarTheme"
+            android:layout_toRightOf="@id/mainactivity_nextbutton"
             android:background="@drawable/stop"
             android:enabled="false"
-            android:onClick="StopEvent" />
+            android:onClick="stopEvent" />
 
         <Button
             android:id="@+id/mainactivity_sensorbutton"
-            style="@style/ButtonTheme"
+            style="@style/ButtonBarTheme"
             android:layout_toRightOf="@id/mainactivity_stopbutton"
             android:background="@drawable/sensor_disabled"
             android:enabled="true"
-            android:onClick="SensorButtonEvent" />
+            android:onClick="sensorButtonEvent" />
 
         <TextView
             android:id="@+id/MainActivity_MenuText"

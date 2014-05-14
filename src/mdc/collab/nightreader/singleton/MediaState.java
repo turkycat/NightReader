@@ -69,7 +69,7 @@ public class MediaState
 		status = MediaStatus.PLAYING;
 		
 		//TODO
-		MainActivity.onMediaEvent( status );
+		MainActivity.resetUI();
 		//TODO
 		
 		mediaPlayer.start();
@@ -88,7 +88,7 @@ public class MediaState
 			status = MediaStatus.STOP;
 			
 			//TODO
-			MainActivity.onMediaEvent( status );
+			MainActivity.resetUI();
 			//TODO
 			
 			
@@ -105,7 +105,6 @@ public class MediaState
 		if( mediaPlayer.isPlaying() && status == MediaStatus.PLAYING )
 		{
 			mediaPlayer.pause();
-			MainActivity.onMediaEvent( MediaStatus.PAUSED );
 			status = MediaStatus.PAUSED;
 		}
 		else
@@ -130,9 +129,10 @@ public class MediaState
 			}
 
 			mediaPlayer.start();
-			MainActivity.onMediaEvent( MediaStatus.PLAYING );
 			status = MediaStatus.PLAYING;
 		}
+		
+		MainActivity.resetUI();
 	}
 	
 	
@@ -246,8 +246,8 @@ public class MediaState
 //					}
 					
 					mediaPlayer.start();
-					MainActivity.onMediaEvent( status );
 					currentPlaylistPosition = next;
+					MainActivity.resetUI();
 				}
 			}
 		}
