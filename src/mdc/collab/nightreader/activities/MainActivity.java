@@ -50,7 +50,7 @@ public class MainActivity extends Activity implements SensorEventListener
 	private final static long AUDIO_CUTOFF_MILLIS = 1000 * ( (int) ( 60f * AUDIO_CUTOFF_MINUTES ) );
 
 	//the threshold for what determines "significant" movement of the phone
-	private static final double MOVEMENT_SIGNIFICANCE_THRESHOLD = 0.5;
+	private static final double MOVEMENT_SIGNIFICANCE_THRESHOLD = 0.3;
 
 	//the time, in millis, of the last significant event detected
 	private static long lastSignificantEvent;
@@ -149,6 +149,7 @@ public class MainActivity extends Activity implements SensorEventListener
 		nextButton = (Button) findViewById( R.id.mainactivity_nextbutton );
 		previousButton = (Button) findViewById( R.id.mainactivity_previousbutton );
 		stopButton = (Button) findViewById( R.id.mainactivity_stopbutton );
+		
 
 		//initialize the progress bar
 		progressBar = (ProgressBar) findViewById( R.id.MainActivity_ProgressBar );

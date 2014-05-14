@@ -27,19 +27,47 @@
             android:layout_height="wrap_content"
             android:textColor="@color/CustomBlue"
             android:textSize="18dp"
-            android:text="Dude, what&apos;s mine say?" />
+            android:text="@string/app_name" />
 
         <TextView
-            android:id="@+id/dialog_title"
+            android:id="@+id/dialog_textArea"
             style="?android:attr/buttonBarButtonStyle"
             android:background="@android:color/black"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textSize="14dp"
-            android:layout_gravity="left"
-            android:layout_marginBottom="6dp"
-            android:text="second text area" />
+            android:textSize="16dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingBottom="12dp"
+			android:gravity="left"
+            android:text="@string/dialog_body" />
+
+        <TextView
+            android:id="@+id/dialog_textArea"
+            style="?android:attr/buttonBarButtonStyle"
+            android:background="@android:color/black"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingBottom="12dp"
+			android:gravity="left"
+            android:text="@string/dialog_body2" />
+
+        <TextView
+            android:id="@+id/dialog_textArea"
+            style="?android:attr/buttonBarButtonStyle"
+            android:background="@android:color/black"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingBottom="12dp"
+			android:gravity="left"
+            android:layout_marginBottom="4dp"
+            android:text="@string/dialog_body3" />
 
         <LinearLayout
             style="?android:attr/buttonBarStyle"
@@ -55,7 +83,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:onClick="closeDialog"
-                android:text="OK" />
+                android:text="@string/dialog_confirm" />
         </LinearLayout>
 
         <requestFocus />

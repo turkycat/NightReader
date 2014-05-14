@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">NightReader</string>
+    <string name="app_name">Nightreader</string>
     <string name="main_action_settings">About</string>
     <string name="buttonText">Select Audio File</string>
     <string name="title_activity_list">ListActivity</string>
@@ -9,8 +9,9 @@
     <string name="title_activity_list_view">ListViewActivity</string>
     <string name="MainActivity_MenuTextString">Loading&#8230;</string>
     <string name="mainactivity_mediainfo_mainstring"></string>
-    <string name="dialog_main_string">what does mine say?</string>
-    <string name="dude">dude</string>
-    <string name="sweet">sweet</string>
+    <string name="dialog_body">Do you love listening to audiobooks, but hate finding your place again after falling asleep or leaving your phone?</string>
+    <string name="dialog_body2">Nightreader is the player that also listens to you. If you fall asleep, you stop moving. If you stop moving, the player stops playing.</string>
+    <string name="dialog_body3">Don\'t worry, it\'s sensitive. Although, if you want to disable the sensor for any reason, use the sensor button to the far right.\n\nSend comments, feature requests, and bug reports to jesse.frush@gmail.com</string>
+    <string name="dialog_confirm">OK</string>
 
 </resources>

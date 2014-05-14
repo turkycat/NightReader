@@ -75,7 +75,7 @@ public class MediaState
 	 */
 	public synchronized void stopMedia()
 	{
-		if( mediaPlayer.isPlaying() )
+		if( mediaPlayer.isPlaying() || isPaused )
 		{
 			mediaPlayer.stop();
 			mediaPlayer.reset();
