@@ -215,6 +215,10 @@ public class MainActivity extends Activity implements SensorEventListener
 	{
 		moveTaskToBack( true );
 	}
+	
+	
+	
+	
 
 	//-----------------------------------------------------accelerometer & other sensor related methods
 
@@ -306,13 +310,18 @@ public class MainActivity extends Activity implements SensorEventListener
 			}
 		}
 	}
+	
+	
+	
+	
+	
 
-	//------------------------------------------------------------------callback methods from application and buttons
+	//------------------------------------------------------------------callback methods for buttons
 
 	/**
 	 * opens the list view for song selection
 	 */
-	public void ejectButtonEvent( View view )
+	public void ejectEvent( View view )
 	{
 		Intent intent = new Intent( MainActivity.this, ListViewActivity.class );
 		//intent.addFlags( Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT );
@@ -349,18 +358,20 @@ public class MainActivity extends Activity implements SensorEventListener
 	/**
 	 * moves to the next song
 	 */
-	public void nextButtonEvent( View view )
+	public void nextEvent( View view )
 	{
-		MediaState.getInstance().stopMedia();
+		MediaState.getInstance().nextTrack();
 	}
 
 	/**
 	 * retrieves the previous song
 	 */
-	public void previousButtonEvent( View view )
+	public void previousEvent( View view )
 	{
-		MediaState.getInstance().stopMedia();
+		MediaState.getInstance().previousTrack();
 	}
+	
+	
 
 	/**
 	 * toggles the sensor
@@ -382,6 +393,11 @@ public class MainActivity extends Activity implements SensorEventListener
 			mainInfoText.setVisibility( View.INVISIBLE );
 		}
 	}
+	
+	
+	
+	
+	
 
 	//----------------------------------------------------------------------private methods and classes
 

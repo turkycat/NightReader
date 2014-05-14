@@ -67,12 +67,9 @@ public class MediaState
 		initializeAndPlayMedia( position);
 				
 		status = MediaStatus.PLAYING;
-		
-		//TODO
-		MainActivity.resetUI();
-		//TODO
-		
 		mediaPlayer.start();
+		
+		MainActivity.resetUI();
 	}
 
 	
@@ -84,14 +81,8 @@ public class MediaState
 		if( mediaPlayer.isPlaying() )
 		{
 			mediaPlayer.stop();
-
 			status = MediaStatus.STOP;
-			
-			//TODO
 			MainActivity.resetUI();
-			//TODO
-			
-			
 		}
 	}
 
@@ -136,6 +127,58 @@ public class MediaState
 	}
 	
 	
+	/**
+	 * advances the playlist to the next track
+	 */
+	public void nextTrack()
+	{
+		if( playlist != null )
+		{
+			int next = currentPlaylistPosition + 1;
+			if( next >= playlist.size() )
+			{
+				next = 0;
+			}
+			if( next != currentPlaylistPosition )
+			{
+				mediaPlayer.stop();
+				mediaPlayer.reset();
+				initializeAndPlayMedia( next );
+				
+				mediaPlayer.start();
+				currentPlaylistPosition = next;
+				MainActivity.resetUI();
+			}
+		}
+	}
+	
+	
+	/**
+	 * returns the playlist to the previous track
+	 */
+	public void previousTrack()
+	{
+		if( playlist != null )
+		{
+			int previous = currentPlaylistPosition - 1;
+			if( previous < 0 )
+			{
+				previous = playlist.size() - 1;
+			}
+			if( previous != currentPlaylistPosition )
+			{
+				mediaPlayer.stop();
+				mediaPlayer.reset();
+				initializeAndPlayMedia( previous );
+				
+				mediaPlayer.start();
+				currentPlaylistPosition = previous;
+				MainActivity.resetUI();
+			}
+		}
+	}
+	
+	
 	
 	//--------------------------------------------------------------determinate methods
 
@@ -174,6 +217,7 @@ public class MediaState
 	{
 		return mediaPlayer;
 	}
+	
 	
 	
 	/**
@@ -217,39 +261,7 @@ public class MediaState
 		@Override
 		public void onCompletion( MediaPlayer mp )
 		{
-			if( playlist != null )
-			{
-				int next = currentPlaylistPosition + 1;
-				if( next >= playlist.size() )
-				{
-					next = 0;
-				}
-				if( next != currentPlaylistPosition )
-				{
-//					try
-//					{
-						mediaPlayer.stop();
-						mediaPlayer.reset();
-						initializeAndPlayMedia( next );
-//					}
-//					catch( IllegalArgumentException e )
-//					{
-//						e.printStackTrace();
-//					}
-//					catch( SecurityException e )
-//					{
-//						e.printStackTrace();
-//					}
-//					catch( IllegalStateException e )
-//					{
-//						e.printStackTrace();
-//					}
-					
-					mediaPlayer.start();
-					currentPlaylistPosition = next;
-					MainActivity.resetUI();
-				}
-			}
+			nextTrack();
 		}
 	}
 
