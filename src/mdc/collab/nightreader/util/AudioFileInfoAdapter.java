@@ -15,51 +15,29 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-public class AudioFileInfoAdapter<E extends ArrayList<Audio>> extends BaseAdapter
+public class AudioFileInfoAdapter<T extends Audio, E extends ArrayList<T>> extends BaseAdapter
 {
-	private static NightReader application;
+	//private static NightReader application;
 	private LayoutInflater mInflater;
 	
-	private ArrayList<Audio> list;
+	private ArrayList<T> list;
 
-	public AudioFileInfoAdapter( NightReader app, ArrayList<Audio> list )
+	public AudioFileInfoAdapter( NightReader app, ArrayList<T> list )
 	{
-		application = app;
+		//application = app;
 		this.list = list;
-		this.mInflater = LayoutInflater.from( application.getApplicationContext() );
+		this.mInflater = LayoutInflater.from( app.getApplicationContext() );
 	}
 
 	@Override
 	public int getCount()
 	{
-//		switch( application.getSorting() )
-//		{
-//		default:
-//			return application.getAllAudioFiles().size();
-//			
-//		case ALBUM:
-//			return application.getAlbums().size();
-//			
-//		case ARTIST:
-//			return application.getArtists().size();
-//		}
 		return list.size();
 	}
 
 	@Override
 	public Object getItem( int item )
 	{
-//		switch( application.getSorting() )
-//		{
-//		default:
-//			return application.getAllAudioFiles().get( item );
-//			
-//		case ALBUM:
-//			return application.getAlbums().get( item );
-//			
-//		case ARTIST:
-//			return application.getArtists().get( item );
-//		}
 		return list.get( item );
 	}
 
@@ -89,32 +67,12 @@ public class AudioFileInfoAdapter<E extends ArrayList<Audio>> extends BaseAdapte
 		}
 		
 		
-//		switch( application.getSorting() )
-//		{
-//		default:
-//		case SONG:
-//			
-//			
-//			
-//		case ALBUM:
-//
-//			ArrayList<AudioFileGroup> albums;
-//			int size = albums.size();
-//			
-//			for( int i = 0; i < size; ++i )
-//			{
-//				
-//			}
-//			
-//			break;
-//		}
-		
-		
-		Audio audio = list.get( position );
+		Audio audio = (Audio) list.get( position );
 		String titleString = audio.getTitle();
 		String subTitleString = audio.getSubtitle();
 
-		if( position == 0 || titleString.charAt( 0 ) != list.get( position - 1 ).getTitle().charAt( 0 ) )
+		//enable the view separator if we are on the first item or if the first letter of our current item does not match the previous
+		if( position == 0 || titleString.charAt( 0 ) != ( (Audio)list.get( position - 1 ) ).getTitle().charAt( 0 ) )
 		{
 			holder.separator.setVisibility( View.VISIBLE );
 			holder.separator.setText( "" + titleString.charAt( 0 ) );
@@ -124,7 +82,10 @@ public class AudioFileInfoAdapter<E extends ArrayList<Audio>> extends BaseAdapte
 			holder.separator.setVisibility( View.GONE );
 		}
 
+		//set the main text field to the Audio item's title string
 		holder.titleField.setText( titleString );
+		
+		//enable/disable the subtitle field, populate if necessary
 		if( subTitleString == null || subTitleString.equals( "" ) )
 		{
 			holder.subTitleField.setVisibility( View.GONE );
@@ -143,29 +104,4 @@ public class AudioFileInfoAdapter<E extends ArrayList<Audio>> extends BaseAdapte
 		TextView titleField;
 		TextView subTitleField;
 	}
-	
-
-
-//	private String getTitleString( int position )
-//	{
-//		if( position < 0 || position >= audioFiles.size() ) return "Unknown";
-//
-//		AudioFileInfo requestedFile = audioFiles.get( position );
-//		switch( application.getSorting() )
-//		{
-//		case SONG:
-//			return requestedFile.getSongTitle();
-//
-//		case ARTIST:
-//			return requestedFile.getArtistName();
-//
-//		case ALBUM:
-//			return requestedFile.getAlbumName();
-//
-//		case GENRE:
-//			return requestedFile.getGenre();
-//		}
-//		
-//		return "Unknown";
-//	}
 }

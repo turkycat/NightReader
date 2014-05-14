@@ -129,7 +129,6 @@ public class ListViewActivity extends Activity
 	{
 		list = null;
 		isMainMenu = true;
-		NightReader.sortAudioFiles( Sorting.ARTIST, null );
 		populateListView( application.getArtists() );
 	}
 
@@ -141,7 +140,6 @@ public class ListViewActivity extends Activity
 	{
 		list = null;
 		isMainMenu = true;
-		NightReader.sortAudioFiles( Sorting.ALBUM, null );
 		populateListView( application.getAlbums() );
 	}
 
@@ -162,7 +160,7 @@ public class ListViewActivity extends Activity
 	 */
 	private <E extends Audio> void populateListView( ArrayList<E> audio )
 	{
-		AudioFileInfoAdapter arrayAdapter = new AudioFileInfoAdapter( application, audio );
+		AudioFileInfoAdapter<Audio, ArrayList<Audio>> arrayAdapter = new AudioFileInfoAdapter<Audio, ArrayList<Audio>>( application, audio );
         listView.setAdapter( arrayAdapter );
         updateButtonIcons();
 	}
@@ -203,7 +201,7 @@ public class ListViewActivity extends Activity
 		((Button) findViewById( R.id.SongTitleButton )).setBackgroundResource( song );
 		((Button) findViewById( R.id.ArtistNameButton )).setBackgroundResource( artist );
 		((Button) findViewById( R.id.AlbumNameButton )).setBackgroundResource( album );
-		((Button) findViewById( R.id.GenreNameButton )).setBackgroundResource( genre );
+		//((Button) findViewById( R.id.GenreNameButton )).setBackgroundResource( genre );
 	}
 
 
