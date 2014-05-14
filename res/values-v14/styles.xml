@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!--
         Base application theme for API 14+. This theme completely replaces
@@ -7,7 +7,13 @@
     -->
 <!--     <style name="AppBaseTheme" parent="android:Theme.Black.NoTitleBar.Fullscreen"> -->
     <style name="AppBaseTheme" parent="android:Theme.Holo.NoActionBar.Fullscreen">
+        <item name="android:background">@android:color/black</item>
         <!-- API 14 theme customizations can go here. -->
+    </style>
+    
+    <style name="DialogTheme" parent="android:attr/buttonBarButtonStyle">
+        
+        
     </style>
 
 </resources>

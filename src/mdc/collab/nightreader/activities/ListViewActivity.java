@@ -15,11 +15,16 @@ import mdc.collab.nightreader.util.AudioFileGroup;
 import mdc.collab.nightreader.util.AudioFileInfo;
 import mdc.collab.nightreader.util.AudioFileInfoAdapter;
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnHoverListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -169,7 +174,7 @@ public class ListViewActivity extends Activity
 	 */
 	private <E extends Audio> void populateListView( ArrayList<E> audio )
 	{
-		AudioFileInfoAdapter arrayAdapter = new AudioFileInfoAdapter( this.getBaseContext(), audio );
+		AudioFileInfoAdapter arrayAdapter = new AudioFileInfoAdapter( getApplicationContext(), audio );
         listView.setAdapter( arrayAdapter );
         updateButtonIcons();
 	}

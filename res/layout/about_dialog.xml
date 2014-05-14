@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="2dp"
+    android:orientation="vertical"
+    android:padding="2dp"
+    android:dividerPadding="2dp"
+    android:background="@color/CustomBlue" >
+
+<!--     <LinearLayout -->
+<!--         android:id="@+id/dialog_layout" -->
+<!--         style="?android:attr/buttonBarButtonStyle" -->
+<!--         android:layout_width="match_parent" -->
+<!--         android:layout_height="wrap_content" -->
+<!--     	android:orientation="vertical" -->
+<!--     android:layout_margin="2dp" -->
+<!--     android:padding="2dp" -->
+<!--         android:background="@color/CustomBlue" -->
+         >
+
+        <TextView
+            android:id="@+id/dialog_title"
+            style="?android:attr/buttonBarButtonStyle"
+            android:background="@android:color/black"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/CustomBlue"
+            android:textSize="18dp"
+            android:text="Dude, what&apos;s mine say?" />
+
+        <TextView
+            android:id="@+id/dialog_title"
+            style="?android:attr/buttonBarButtonStyle"
+            android:background="@android:color/black"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="14dp"
+            android:layout_gravity="left"
+            android:layout_marginBottom="6dp"
+            android:text="second text area" />
+
+        <LinearLayout
+            style="?android:attr/buttonBarStyle"
+            android:background="@android:color/black"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/Button01"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="closeDialog"
+                android:text="OK" />
+        </LinearLayout>
+
+        <requestFocus />
+<!--     </LinearLayout> -->
+
+</LinearLayout>

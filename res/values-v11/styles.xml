@@ -6,6 +6,7 @@
     -->
 <!--     <style name="AppBaseTheme" parent="android:Theme.Black.NoTitleBar.Fullscreen"> -->
     <style name="AppBaseTheme" parent="android:Theme.Holo.NoActionBar.Fullscreen">
+        <item name="android:background">@android:color/black</item>
         <!-- API 11 theme customizations can go here. -->
     </style>
 

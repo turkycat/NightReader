@@ -27,7 +27,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"
             android:name="mdc.collab.nightreader.activities.ListViewActivity"
             android:label="@string/title_activity_list_view" >
         </activity>

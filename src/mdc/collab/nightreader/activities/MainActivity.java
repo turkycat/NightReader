@@ -12,6 +12,7 @@ import mdc.collab.nightreader.dialog.AboutDialogFragment;
 import mdc.collab.nightreader.singleton.MediaState;
 import mdc.collab.nightreader.util.AudioFileInfo;
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.app.Service;
 import android.content.ContentUris;
 import android.content.Intent;
@@ -104,6 +105,8 @@ public class MainActivity extends Activity implements SensorEventListener
 	
 	//the state of the pause button
 	private static boolean isPaused = false;
+	
+	private static DialogFragment dialog;
 
 	//accounts for gravity
 	float[] gravity;
@@ -171,6 +174,7 @@ public class MainActivity extends Activity implements SensorEventListener
 	 */
 	public static void resetUI()
 	{
+		lastSignificantEvent = System.currentTimeMillis();
 		resetEjectButton();
 		resetPlayPauseButton();
 		resetPreviousButton();
@@ -222,7 +226,8 @@ public class MainActivity extends Activity implements SensorEventListener
 		switch( item.getItemId() )
 		{
 		case R.id.main_action_settings:
-			new AboutDialogFragment().show( getFragmentManager(), "ABOUT" );
+			dialog = new AboutDialogFragment();
+			dialog.show( getFragmentManager(), "ABOUT" );
 		}
 		
 		return true;
@@ -262,12 +267,16 @@ public class MainActivity extends Activity implements SensorEventListener
 		//then set the play/pause button image according to the new state of the media
 		if( MediaState.getInstance().isMediaPlaying() )
 		{
+			isPaused = false;
 			playButton.setBackgroundResource( R.drawable.pause_enabled );
 		}
 		else
 		{
+			isPaused = true;
 			playButton.setBackgroundResource( R.drawable.play_enabled );
 		}
+		
+		resetUI();
 	}
 
 	/**
@@ -276,6 +285,7 @@ public class MainActivity extends Activity implements SensorEventListener
 	public void stopEvent( View view )
 	{
 		MediaState.getInstance().stopMedia();
+		isPaused = false;
 	}
 
 	/**
@@ -284,6 +294,7 @@ public class MainActivity extends Activity implements SensorEventListener
 	public void nextEvent( View view )
 	{
 		MediaState.getInstance().nextTrack();
+		isPaused = false;
 	}
 
 	/**
@@ -292,6 +303,7 @@ public class MainActivity extends Activity implements SensorEventListener
 	public void previousEvent( View view )
 	{
 		MediaState.getInstance().previousTrack();
+		isPaused = false;
 	}
 	
 	
@@ -315,6 +327,15 @@ public class MainActivity extends Activity implements SensorEventListener
 			Toast.makeText( getApplicationContext(), "sensor disabled", Toast.LENGTH_LONG ).show();
 			mainInfoText.setVisibility( View.INVISIBLE );
 		}
+	}
+	
+
+	
+	public void closeDialog( View view )
+	{
+		Log.i( TAG, "closeDialog called" );
+		
+		dialog.dismiss();
 	}
 	
 	

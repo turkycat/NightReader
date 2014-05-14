@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import mdc.collab.nightreader.R;
 import mdc.collab.nightreader.application.NightReader;
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,16 +18,12 @@ import android.widget.TextView;
 
 public class AudioFileInfoAdapter<E extends ArrayList<Audio>> extends BaseAdapter
 {
-	//private static NightReader application;
 	private LayoutInflater mInflater;
 	
 	private ArrayList<Audio> list;
-	
-	private static int selectedItem = -1;
 
 	public AudioFileInfoAdapter( Context context, ArrayList<Audio> list )
 	{
-		//application = app;
 		this.list = list;
 		this.mInflater = LayoutInflater.from( context );
 	}
