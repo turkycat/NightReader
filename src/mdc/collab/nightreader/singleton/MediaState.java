@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import mdc.collab.nightreader.activities.MainActivity;
-import mdc.collab.nightreader.application.NightReader.Sorting;
+import mdc.collab.nightreader.application.NightReader.SortingMode;
 import mdc.collab.nightreader.util.AudioFileInfo;
 import android.content.Context;
 import android.media.MediaPlayer;
@@ -37,9 +37,6 @@ public class MediaState
 
 	//the current playlist
 	private ArrayList<AudioFileInfo> playlist;
-
-	//the current sorting mode
-	private Sorting sorting;
 
 	//the current audio file being played
 	private AudioFileInfo currentAudioFile;
@@ -197,10 +194,10 @@ public class MediaState
 	/**
 	 * returns the sorting type which the audio files are currently arranged by
 	 */
-	public synchronized Sorting getSorting()
-	{
-		return sorting;
-	}
+	//public synchronized Sorting getSorting()
+	//{
+	//	return sorting;
+	//}
 
 	/**
 	 * returns the current audio file being played
@@ -293,7 +290,6 @@ public class MediaState
 			}
 		} );
 		status = MediaStatus.NONE;
-		sorting = Sorting.NONE;
 		currentAudioFile = null;
 		playlist = null;
 		currentPlaylistPosition = -1;

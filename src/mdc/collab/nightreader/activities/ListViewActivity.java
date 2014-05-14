@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 import mdc.collab.nightreader.R;
 import mdc.collab.nightreader.application.NightReader;
-import mdc.collab.nightreader.application.NightReader.Sorting;
+import mdc.collab.nightreader.application.NightReader.SortingMode;
 import mdc.collab.nightreader.singleton.MediaState;
 import mdc.collab.nightreader.util.Audio;
 import mdc.collab.nightreader.util.AudioFileGroup;
@@ -35,6 +35,9 @@ public class ListViewActivity extends Activity
 	
 	//controls what level of the list we are on. behaviors such as selecting items & the back button depend on this
 	private boolean isMainMenu;
+	
+	//a state variable for the current sorting mode
+	private SortingMode mode = SortingMode.SONG;
 	
 	@Override
 	protected void onCreate( Bundle savedInstanceState )
@@ -63,6 +66,24 @@ public class ListViewActivity extends Activity
 			populateListView( list );
 			isMainMenu = false;
 		}
+
+		
+		switch( mode )
+		{
+		default:
+		case SONG:
+			sortByTitle( null );
+			break;
+			
+		case ALBUM:
+			sortByAlbum( null );
+			break;
+
+		case ARTIST:
+			sortByArtist( null );
+			break;
+			
+		}
 		
 	}
 	
@@ -86,24 +107,10 @@ public class ListViewActivity extends Activity
 	{
 		//super.onBackPressed();
 		if( isMainMenu ) finish();
-		
-		//TODO lets make this reset somehow
 		else
 		{
-			switch( MediaState.getInstance().getSorting() )
-			{
-			default:
-				sortByTitle( null );
-				break;
-				
-			case ALBUM:
-				sortByAlbum( null );
-				break;
-				
-			case ARTIST:
-				sortByAlbum( null );
-				break;
-			}
+			
+			sortByTitle( null );
 		}
 	}
 	
@@ -115,8 +122,9 @@ public class ListViewActivity extends Activity
 	public void sortByTitle( View view )
 	{
 		isMainMenu = true;
+		mode = SortingMode.SONG;
 		ArrayList<AudioFileInfo> allSongs = application.getAllAudioFiles();
-		NightReader.sortAudioFiles( Sorting.SONG, allSongs );
+		NightReader.sortAudioFiles( SortingMode.SONG, allSongs );
 		populateListView( allSongs );
 	}
 
@@ -129,6 +137,7 @@ public class ListViewActivity extends Activity
 	{
 		list = null;
 		isMainMenu = true;
+		mode = SortingMode.ARTIST;
 		populateListView( application.getArtists() );
 	}
 
@@ -140,6 +149,7 @@ public class ListViewActivity extends Activity
 	{
 		list = null;
 		isMainMenu = true;
+		mode = SortingMode.ALBUM;
 		populateListView( application.getAlbums() );
 	}
 
@@ -150,8 +160,8 @@ public class ListViewActivity extends Activity
 	 */
 	public void sortByGenre( View view )
 	{
-		NightReader.sortAudioFiles( Sorting.GENRE, null );
-		populateListView( application.getAllAudioFiles() );
+		//disabled, for now
+		//populateListView( application.getAllAudioFiles() );
 	}
 	
 	
@@ -160,7 +170,7 @@ public class ListViewActivity extends Activity
 	 */
 	private <E extends Audio> void populateListView( ArrayList<E> audio )
 	{
-		AudioFileInfoAdapter<Audio, ArrayList<Audio>> arrayAdapter = new AudioFileInfoAdapter<Audio, ArrayList<Audio>>( application, audio );
+		AudioFileInfoAdapter arrayAdapter = new AudioFileInfoAdapter( application, audio );
         listView.setAdapter( arrayAdapter );
         updateButtonIcons();
 	}
@@ -176,7 +186,7 @@ public class ListViewActivity extends Activity
 		int album = R.drawable.record;
 		int genre = R.drawable.book;
 		
-		switch( MediaState.getInstance().getSorting() )
+		switch( mode )
 		{
 		case SONG:
 			song = R.drawable.notes_select;
@@ -216,7 +226,6 @@ public class ListViewActivity extends Activity
 		public void onItemClick( AdapterView<?> parent, View view, int position, long id )
 		{
 			MediaState mediaState = MediaState.getInstance();
-			Sorting sort = mediaState.getSorting();
 			if( list != null )
 			{
 				mediaState.playMedia( list, position );
@@ -224,9 +233,9 @@ public class ListViewActivity extends Activity
 			}
 			else //if( isMainMenu )//&& ( sort == Sorting.ALBUM || sort == Sorting.ARTIST ) )
 			{
-				ArrayList<AudioFileGroup> grouping = sort == Sorting.ALBUM ? application.getAlbums() : application.getArtists();
+				ArrayList<AudioFileGroup> grouping = ( mode == SortingMode.ALBUM ? application.getAlbums() : application.getArtists() );
 				list = grouping.get( position ).getItems();
-				application.sortAudioFiles( Sorting.SONG, list );
+				NightReader.sortAudioFiles( SortingMode.SONG, list );
 				populateListView( list );
 				isMainMenu = false;
 			}

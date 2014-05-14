@@ -15,14 +15,14 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-public class AudioFileInfoAdapter<T extends Audio, E extends ArrayList<T>> extends BaseAdapter
+public class AudioFileInfoAdapter<E extends ArrayList<Audio>> extends BaseAdapter
 {
 	//private static NightReader application;
 	private LayoutInflater mInflater;
 	
-	private ArrayList<T> list;
+	private ArrayList<Audio> list;
 
-	public AudioFileInfoAdapter( NightReader app, ArrayList<T> list )
+	public AudioFileInfoAdapter( NightReader app, ArrayList<Audio> list )
 	{
 		//application = app;
 		this.list = list;

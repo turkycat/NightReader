@@ -22,7 +22,7 @@ import android.graphics.Typeface;
  */
 public class NightReader extends Application
 {
-	public enum Sorting
+	public enum SortingMode
 	{
 		NONE, SONG, ARTIST, ALBUM, GENRE
 	};
@@ -64,7 +64,7 @@ public class NightReader extends Application
 		
 
 		//create a grouping for artists
-		sortAudioFiles( Sorting.ARTIST, audioFiles );
+		sortAudioFiles( SortingMode.ARTIST, audioFiles );
 		this.artists = new ArrayList<AudioFileGroup>();
 		
 		AudioFileGroup currentGroup = null;
@@ -89,7 +89,7 @@ public class NightReader extends Application
 		
 
 		//create a grouping for albums
-		sortAudioFiles( Sorting.ALBUM, audioFiles );
+		sortAudioFiles( SortingMode.ALBUM, audioFiles );
 		this.albums = new ArrayList<AudioFileGroup>();
 		
 		currentGroup = null;
@@ -113,7 +113,7 @@ public class NightReader extends Application
 		
 		
 		//finally, sort the files by song for the default sorting
-		sortAudioFiles( Sorting.SONG, audioFiles );
+		sortAudioFiles( SortingMode.SONG, audioFiles );
 	}
 
 	
@@ -165,7 +165,7 @@ public class NightReader extends Application
 	/**
 	 * sorts the list of songs given a requested sorting type
 	 */
-	public static void sortAudioFiles( Sorting requestedSort, ArrayList<AudioFileInfo> toSort )
+	public static void sortAudioFiles( SortingMode requestedSort, ArrayList<AudioFileInfo> toSort )
 	{
 		if( toSort == null ) return;
 		
@@ -173,7 +173,7 @@ public class NightReader extends Application
 		switch( requestedSort )
 		{
 		default:
-			requestedSort = Sorting.SONG;
+			requestedSort = SortingMode.SONG;
 
 		case SONG:
 			sortingComparator = new Comparator<AudioFileInfo>()
