@@ -8,8 +8,8 @@ import java.util.ArrayList;
 
 import mdc.collab.nightreader.R;
 import mdc.collab.nightreader.application.NightReader;
+import mdc.collab.nightreader.dialog.AboutDialogFragment;
 import mdc.collab.nightreader.singleton.MediaState;
-import mdc.collab.nightreader.singleton.MediaState.MediaStatus;
 import mdc.collab.nightreader.util.AudioFileInfo;
 import android.app.Activity;
 import android.app.Service;
@@ -30,6 +30,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -209,6 +210,18 @@ public class MainActivity extends Activity implements SensorEventListener
 	{
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate( R.menu.main, menu );
+		return true;
+	}
+	
+	@Override
+	public boolean onMenuItemSelected( int featureId, MenuItem item )
+	{
+		switch( item.getItemId() )
+		{
+		case R.id.main_action_settings:
+			new AboutDialogFragment().show( getFragmentManager(), "ABOUT" );
+		}
+		
 		return true;
 	}
 
