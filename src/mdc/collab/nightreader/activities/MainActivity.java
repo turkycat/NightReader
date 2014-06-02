@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import mdc.collab.nightreader.R;
 import mdc.collab.nightreader.application.NightReader;
 import mdc.collab.nightreader.dialog.AboutDialogFragment;
+import mdc.collab.nightreader.dialog.DelaySelectionFragment;
 import mdc.collab.nightreader.singleton.MediaState;
 import mdc.collab.nightreader.util.AudioFileInfo;
 import android.app.Activity;
@@ -226,9 +227,16 @@ public class MainActivity extends Activity implements SensorEventListener
 	{
 		switch( item.getItemId() )
 		{
-		case R.id.main_action_settings:
+		case R.id.menuitem_about:
 			dialog = new AboutDialogFragment();
 			dialog.show( getFragmentManager(), "ABOUT" );
+			break;
+
+		case R.id.menuitem_delay_selector:
+			dialog = new DelaySelectionFragment();
+			dialog.show( getFragmentManager(), "DELAYSELECTION" );
+			break;
+			
 		}
 		
 		return true;
@@ -336,10 +344,9 @@ public class MainActivity extends Activity implements SensorEventListener
 	{
 		Log.i( TAG, "closeDialog called" );
 		
-		dialog.dismiss();
+		if( dialog != null ) dialog.dismiss();
+		dialog = null;
 	}
-	
-	
 	
 	
 

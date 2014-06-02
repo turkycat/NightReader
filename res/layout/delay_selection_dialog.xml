@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="2dp"
+    android:padding="2dp"
+    android:dividerPadding="2dp"
+    android:background="@color/CustomBlue"
+    android:orientation="vertical" >
+
+    <SeekBar
+        android:id="@+id/delay_selection_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="30" />
+    
+    <TextView 
+        android:id="@+id/selection_bar_text_field"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:textColor="@android:color/white"
+        android:gravity="center_horizontal" />
+
+<!--     <LinearLayout -->
+<!--         style="?android:attr/buttonBarStyle" -->
+<!--         android:layout_width="match_parent" -->
+<!--         android:layout_height="wrap_content" -->
+<!--         android:background="@android:color/black" -->
+<!--         android:orientation="horizontal" > -->
+
+<!--         <Button -->
+<!--             android:id="@+id/timer_settings_confirm" -->
+<!--             style="?android:attr/buttonBarButtonStyle" -->
+<!--             android:layout_width="0dp" -->
+<!--             android:layout_height="wrap_content" -->
+<!--             android:layout_weight="1" -->
+<!--             android:text="@string/dialog_confirm" /> -->
+<!--     </LinearLayout> -->
+<LinearLayout
+            style="?android:attr/buttonBarStyle"
+            android:background="@android:color/black"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/timer_settings_confirm"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="closeDialog"
+                android:text="@string/dialog_confirm" />
+        </LinearLayout>
+
+    <requestFocus />
+
+</LinearLayout>
