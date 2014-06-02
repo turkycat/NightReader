@@ -44,17 +44,17 @@ public class MainActivity extends Activity implements SensorEventListener
 {
 	private static final String TAG = "MainActivity";
 
-	//the number of minutes before cutting off the audio feed, for calculating the delay actually used
-	private final static float AUDIO_CUTOFF_MINUTES = 5f;
-
-	//the number of milliseconds to wait between significant events
-	private final static long AUDIO_CUTOFF_MILLIS = 1000 * ( (int) ( 60f * AUDIO_CUTOFF_MINUTES ) );
-
 	//the threshold for what determines "significant" movement of the phone
 	private static final double MOVEMENT_SIGNIFICANCE_THRESHOLD = 0.3;
 
 	//the time, in millis, of the last significant event detected
 	private static long lastSignificantEvent;
+
+	//the number of minutes before cutting off the audio feed, for calculating the delay actually used
+	private static int audio_cutoff_minutes;
+
+	//the number of milliseconds to wait between significant events
+	private static int audio_cutoff_millis;
 
 	//a reference to the application instance
 	private static NightReader application;
@@ -164,6 +164,7 @@ public class MainActivity extends Activity implements SensorEventListener
 		}
 
 		initializeSensors();
+		setTimerDelay( 10 );
 
 		SongStatusThread thread = new SongStatusThread();
 		thread.start();
@@ -322,24 +323,41 @@ public class MainActivity extends Activity implements SensorEventListener
 	 */
 	public void sensorButtonEvent( View view )
 	{
-		sensorEnabled = !sensorEnabled;
-		lastSignificantEvent = System.currentTimeMillis();
-		if( sensorEnabled )
+		setSensorEnabled( !sensorEnabled );
+	}
+	
+	
+	/**
+	 * sets the current delay timer for the pause functionality
+	 */
+	public void setTimerDelay( int delay )
+	{
+		if( delay <= 0 )
 		{
-			mainInfoText.setVisibility( View.VISIBLE );
-			sensorButton.setBackgroundResource( R.drawable.sensor_enabled );
-			Toast.makeText( getApplicationContext(), "sensor enabled", Toast.LENGTH_LONG ).show();
+			setSensorEnabled( false );
+			Toast.makeText( getApplicationContext(), "sensor disabled", Toast.LENGTH_LONG ).show();
 		}
 		else
 		{
-			sensorButton.setBackgroundResource( R.drawable.sensor_disabled );
-			Toast.makeText( getApplicationContext(), "sensor disabled", Toast.LENGTH_LONG ).show();
-			mainInfoText.setVisibility( View.INVISIBLE );
+			setSensorEnabled( true );
+			audio_cutoff_minutes = delay;
+			audio_cutoff_millis = 1000 * ( (int) ( 60 * audio_cutoff_minutes ) );
 		}
 	}
 	
-
 	
+	/**
+	 * returns the current delay timer
+	 */
+	public int getTimerDelay()
+	{
+		return audio_cutoff_minutes;
+	}
+	
+
+	/**
+	 * used to close the currently opened dialog
+	 */
 	public void closeDialog( View view )
 	{
 		Log.i( TAG, "closeDialog called" );
@@ -368,6 +386,28 @@ public class MainActivity extends Activity implements SensorEventListener
 
 		sensorEnabled = true;
 		sensorButton.setBackgroundResource( R.drawable.sensor_enabled );
+	}
+	
+	
+	/**
+	 * a private method used to toggle the sensor
+	 */
+	private void setSensorEnabled( boolean enabled )
+	{
+		lastSignificantEvent = System.currentTimeMillis();
+		
+		sensorEnabled = enabled;
+		if( sensorEnabled )
+		{
+			//mainInfoText.setVisibility( View.VISIBLE );
+			sensorButton.setBackgroundResource( R.drawable.sensor_enabled );
+		}
+		else
+		{
+			sensorButton.setBackgroundResource( R.drawable.sensor_disabled );
+			//mainInfoText.setVisibility( View.INVISIBLE );
+			mainInfoText.setText( "Disabled." );
+		}
 	}
 
 	@Override
@@ -427,7 +467,7 @@ public class MainActivity extends Activity implements SensorEventListener
 			}
 
 			//check if we've reached the cutoff point
-			if( currentTime - lastSignificantEvent > AUDIO_CUTOFF_MILLIS )
+			if( currentTime - lastSignificantEvent > audio_cutoff_millis )
 			{
 				MediaState.getInstance().stopMedia();
 				mainInfoText.setText( "Media paused" );
@@ -435,8 +475,8 @@ public class MainActivity extends Activity implements SensorEventListener
 			else
 			{
 				int seconds = (int) elapsedTime / 1000;
-				int totalSeconds = (int) AUDIO_CUTOFF_MILLIS / 1000;
-				if( sensorEnabled ) mainInfoText.setText( "" + ( totalSeconds - seconds ) + " until pause" );
+				int totalSeconds = (int) audio_cutoff_millis / 1000;
+				if( sensorEnabled ) mainInfoText.setText( "pause in: " + ( totalSeconds - seconds ) );
 			}
 		}
 	}

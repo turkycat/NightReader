@@ -5,6 +5,7 @@
     <string name="about">About NightReader</string>
     <string name="delay_selector">Timer Settings</string>
     <string name="buttonText">Select Audio File</string>
+    <string name="settings_title_string">Timer Settings</string>
     <string name="title_activity_list">ListActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_list_view">ListViewActivity</string>

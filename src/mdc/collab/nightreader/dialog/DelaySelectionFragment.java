@@ -1,6 +1,7 @@
 package mdc.collab.nightreader.dialog;
 
 import mdc.collab.nightreader.R;
+import mdc.collab.nightreader.activities.MainActivity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -25,7 +26,10 @@ public class DelaySelectionFragment extends DialogFragment
 		// Use the Builder class for convenient dialog construction
 		AlertDialog.Builder builder = new AlertDialog.Builder( getActivity() );
 		View inflated = getActivity().getLayoutInflater().inflate( R.layout.delay_selection_dialog, null );
+		
+		//grab the selection bar and set a value changed listener to modify the text field
 		selectionBar = (SeekBar) inflated.findViewById( R.id.delay_selection_bar );
+		selectionBar.setProgress( ( (MainActivity)getActivity() ).getTimerDelay() );
 		selectionBar.setOnSeekBarChangeListener( new SeekBar.OnSeekBarChangeListener()
 		{
 
@@ -36,22 +40,17 @@ public class DelaySelectionFragment extends DialogFragment
 			}
 
 			@Override
-			public void onStartTrackingTouch( SeekBar seekBar )
-			{
-				// TODO Auto-generated method stub
-				
-			}
+			public void onStartTrackingTouch( SeekBar seekBar ) {}
 
 			@Override
-			public void onStopTrackingTouch( SeekBar seekBar )
-			{
-				selectionText.setText( "" + selectionBar.getProgress() + " Minutes." );
-			}
+			public void onStopTrackingTouch( SeekBar seekBar ) {}
 		} );
-		
+
+		//grab a reference to the selection text and set an initial text value
 		selectionText = (TextView) inflated.findViewById( R.id.selection_bar_text_field );
 		selectionText.setText( "" + selectionBar.getProgress() + " Minutes." );
 
+		//grab the button so that we can manually dismiss the dialog as well as save the selected settings
 		confirm = (Button) inflated.findViewById( R.id.timer_settings_confirm );
 		confirm.setOnClickListener( new View.OnClickListener()
 		{
@@ -60,6 +59,8 @@ public class DelaySelectionFragment extends DialogFragment
 			public void onClick( View v )
 			{
 				int delay = selectionBar.getProgress();
+				MainActivity activity = (MainActivity) getActivity();
+				activity.setTimerDelay( delay );
 				dialog.dismiss();
 			}
 			

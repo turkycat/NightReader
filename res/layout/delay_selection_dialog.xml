@@ -7,52 +7,49 @@
     android:dividerPadding="2dp"
     android:background="@color/CustomBlue"
     android:orientation="vertical" >
+    
+    <TextView 
+        android:id="@+id/settings_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:padding="6dp"
+        android:text="@string/settings_title_string"
+        android:textColor="@android:color/white" />
 
     <SeekBar
         android:id="@+id/delay_selection_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:paddingBottom="12dp"
         android:max="30" />
     
     <TextView 
         android:id="@+id/selection_bar_text_field"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:textSize="16sp"
+        android:paddingBottom="14dp"
+        android:layout_marginBottom="4dp"
         android:textColor="@android:color/white"
         android:gravity="center_horizontal" />
 
-<!--     <LinearLayout -->
-<!--         style="?android:attr/buttonBarStyle" -->
-<!--         android:layout_width="match_parent" -->
-<!--         android:layout_height="wrap_content" -->
-<!--         android:background="@android:color/black" -->
-<!--         android:orientation="horizontal" > -->
+    <LinearLayout
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/black"
+        android:orientation="horizontal" >
 
-<!--         <Button -->
-<!--             android:id="@+id/timer_settings_confirm" -->
-<!--             style="?android:attr/buttonBarButtonStyle" -->
-<!--             android:layout_width="0dp" -->
-<!--             android:layout_height="wrap_content" -->
-<!--             android:layout_weight="1" -->
-<!--             android:text="@string/dialog_confirm" /> -->
-<!--     </LinearLayout> -->
-<LinearLayout
-            style="?android:attr/buttonBarStyle"
-            android:background="@android:color/black"
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/timer_settings_confirm"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
-
-            <Button
-                android:id="@+id/timer_settings_confirm"
-                style="?android:attr/buttonBarButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:onClick="closeDialog"
-                android:text="@string/dialog_confirm" />
-        </LinearLayout>
+            android:layout_weight="1"
+            android:text="@string/dialog_confirm" />
+    </LinearLayout>
 
     <requestFocus />
 
