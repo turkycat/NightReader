@@ -7,6 +7,8 @@
 <!--     <style name="AppBaseTheme" parent="android:Theme.Black.NoTitleBar.Fullscreen"> -->
     <style name="AppBaseTheme" parent="android:Theme.Holo.NoActionBar.Fullscreen">
         <item name="android:background">@android:color/black</item>
+<!--         <item name="android:popupMenuStyle">@style/PopupMenuTheme</item> -->
+<!--         <item name="android:panelBackground">@style/PopupMenuTheme</item> -->
         <!--
             Theme customizations available in newer API levels can go in
             res/values-vXX/styles.xml, while customizations related to
@@ -19,6 +21,8 @@
         <item name="android:background">@android:color/black</item>
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
+    
+<!--     <style name="PopupMenuTheme" parent="android:Theme.Black.NoTitleBar.Fullscreen"></style> -->
 
     <style name="ProgressBarTheme" parent="@android:style/Widget.ProgressBar.Horizontal"></style>
 

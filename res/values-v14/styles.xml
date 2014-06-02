@@ -8,8 +8,12 @@
 <!--     <style name="AppBaseTheme" parent="android:Theme.Black.NoTitleBar.Fullscreen"> -->
     <style name="AppBaseTheme" parent="android:Theme.Holo.NoActionBar.Fullscreen">
         <item name="android:background">@android:color/black</item>
+<!--         <item name="android:popupMenuStyle">@style/PopupMenuTheme</item> -->
+<!--         <item name="android:panelBackground">@style/PopupMenuTheme</item> -->
         <!-- API 14 theme customizations can go here. -->
     </style>
+    
+<!--     <style name="PopupMenuTheme" parent="android:Theme.Black.NoTitleBar.Fullscreen"></style> -->
     
     <style name="DialogTheme" parent="android:attr/buttonBarButtonStyle">
         

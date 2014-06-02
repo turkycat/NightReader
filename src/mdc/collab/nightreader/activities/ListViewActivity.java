@@ -127,9 +127,9 @@ public class ListViewActivity extends Activity
 	{
 		isMainMenu = true;
 		mode = SortingMode.SONG;
-		ArrayList<AudioFileInfo> allSongs = application.getAllAudioFiles();
-		NightReader.sortAudioFiles( SortingMode.SONG, allSongs );
-		populateListView( allSongs );
+		list = application.getAllAudioFiles();
+		NightReader.sortAudioFiles( SortingMode.SONG, list );
+		populateListView( list );
 	}
 
 
