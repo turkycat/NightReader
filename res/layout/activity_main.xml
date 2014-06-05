@@ -76,7 +76,7 @@
             android:layout_toRightOf="@id/mainactivity_playpausebutton"
             android:background="@drawable/previous"
             android:enabled="false"
-            android:onClick="previousEvent" />
+            android:clickable="true" />
 
         <Button
             android:id="@+id/mainactivity_nextbutton"
@@ -84,7 +84,7 @@
             android:layout_toRightOf="@id/mainactivity_previousbutton"
             android:background="@drawable/next"
             android:enabled="false"
-            android:onClick="nextEvent" />
+            android:clickable="true" />
 
         <Button
             android:id="@+id/mainactivity_stopbutton"

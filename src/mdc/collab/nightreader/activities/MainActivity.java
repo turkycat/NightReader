@@ -47,7 +47,7 @@ public class MainActivity extends Activity implements SensorEventListener
 	private static final String TAG = "MainActivity";
 
 	//the threshold for what determines "significant" movement of the phone
-	private static final double MOVEMENT_SIGNIFICANCE_THRESHOLD = 0.3;
+	private static final double MOVEMENT_SIGNIFICANCE_THRESHOLD = 0.25;
 
 	//the time, in millis, of the last significant event detected
 	private static long lastSignificantEvent;
@@ -105,7 +105,7 @@ public class MainActivity extends Activity implements SensorEventListener
 
 	//the state of the sensor
 	private static boolean sensorEnabled;
-	
+
 	//a reference to a dialog fragment that is currently displayed on the screen
 	private static DialogFragment dialog;
 
@@ -150,29 +150,31 @@ public class MainActivity extends Activity implements SensorEventListener
 		nextButton = (Button) findViewById( R.id.mainactivity_nextbutton );
 		previousButton = (Button) findViewById( R.id.mainactivity_previousbutton );
 		stopButton = (Button) findViewById( R.id.mainactivity_stopbutton );
-		
+
+		previousButton.setOnTouchListener( new SeekListener( false ) );
+		nextButton.setOnTouchListener( new SeekListener( true ) );
 
 		//initialize the progress bar
 		progressBar = (ProgressBar) findViewById( R.id.MainActivity_ProgressBar );
-		
+
 		//add seek capability to the progress bar
 		progressBar.setOnTouchListener( new OnTouchListener()
 		{
 			long lastEventTime = 0;
-			
+
 			@Override
 			public boolean onTouch( View v, MotionEvent event )
 			{
 				if( !MediaState.getInstance().isMediaPlaying() ) return false;
 				if( System.currentTimeMillis() - lastEventTime < 200 ) return false;
-				
+
 				lastEventTime = System.currentTimeMillis();
 				float x = event.getX();
 				float w = v.getWidth();
 				float p = x / w;
 				MediaPlayer player = MediaState.getInstance().getCurrentMediaPlayer();
-				player.seekTo( (int)( player.getDuration() * p ) );
-				progressBar.setProgress( (int)( p * 100 ) );
+				player.seekTo( (int) ( player.getDuration() * p ) );
+				progressBar.setProgress( (int) ( p * 100 ) );
 				Log.i( TAG, "x position: " + x + " width: " + w + " per: " + p );
 				return true;
 			}
@@ -190,7 +192,7 @@ public class MainActivity extends Activity implements SensorEventListener
 
 		SongStatusThread thread = new SongStatusThread();
 		thread.start();
-		
+
 		resetUI();
 	}
 
@@ -244,7 +246,7 @@ public class MainActivity extends Activity implements SensorEventListener
 		getMenuInflater().inflate( R.menu.main, menu );
 		return true;
 	}
-	
+
 	@Override
 	public boolean onMenuItemSelected( int featureId, MenuItem item )
 	{
@@ -259,9 +261,9 @@ public class MainActivity extends Activity implements SensorEventListener
 			dialog = new DelaySelectionFragment();
 			dialog.show( getFragmentManager(), "DELAYSELECTION" );
 			break;
-			
+
 		}
-		
+
 		return true;
 	}
 
@@ -270,11 +272,6 @@ public class MainActivity extends Activity implements SensorEventListener
 	{
 		moveTaskToBack( true );
 	}
-	
-	
-	
-	
-	
 
 	//------------------------------------------------------------------callback methods for buttons
 
@@ -299,15 +296,15 @@ public class MainActivity extends Activity implements SensorEventListener
 		//then set the play/pause button image according to the new state of the media
 		if( paused )
 		{
-//			isPaused = true;
+			//			isPaused = true;
 			playButton.setBackgroundResource( R.drawable.play_enabled );
 		}
 		else
 		{
-//			isPaused = false;
+			//			isPaused = false;
 			playButton.setBackgroundResource( R.drawable.pause_enabled );
 		}
-		
+
 		resetUI();
 	}
 
@@ -337,8 +334,6 @@ public class MainActivity extends Activity implements SensorEventListener
 		MediaState.getInstance().previousTrack();
 		//isPaused = false;
 	}
-	
-	
 
 	/**
 	 * toggles the sensor
@@ -347,8 +342,7 @@ public class MainActivity extends Activity implements SensorEventListener
 	{
 		setSensorEnabled( !sensorEnabled );
 	}
-	
-	
+
 	/**
 	 * sets the current delay timer for the pause functionality
 	 */
@@ -366,8 +360,7 @@ public class MainActivity extends Activity implements SensorEventListener
 			audio_cutoff_millis = 1000 * ( (int) ( 60 * audio_cutoff_minutes ) );
 		}
 	}
-	
-	
+
 	/**
 	 * returns the current delay timer
 	 */
@@ -375,7 +368,6 @@ public class MainActivity extends Activity implements SensorEventListener
 	{
 		return audio_cutoff_minutes;
 	}
-	
 
 	/**
 	 * used to close the currently opened dialog
@@ -383,12 +375,10 @@ public class MainActivity extends Activity implements SensorEventListener
 	public void closeDialog( View view )
 	{
 		Log.i( TAG, "closeDialog called" );
-		
+
 		if( dialog != null ) dialog.dismiss();
 		dialog = null;
 	}
-	
-	
 
 	//-----------------------------------------------------accelerometer & other sensor related methods
 
@@ -409,15 +399,14 @@ public class MainActivity extends Activity implements SensorEventListener
 		sensorEnabled = true;
 		sensorButton.setBackgroundResource( R.drawable.sensor_enabled );
 	}
-	
-	
+
 	/**
 	 * a private method used to toggle the sensor
 	 */
 	private void setSensorEnabled( boolean enabled )
 	{
 		lastSignificantEvent = System.currentTimeMillis();
-		
+
 		sensorEnabled = enabled;
 		if( sensorEnabled )
 		{
@@ -479,7 +468,7 @@ public class MainActivity extends Activity implements SensorEventListener
 
 			long currentTime = System.currentTimeMillis();
 			long elapsedTime = currentTime - lastSignificantEvent;
-			Log.i( TAG, "mag: " + magnitude + " elapsed: " + elapsedTime );
+			//Log.i( TAG, "mag: " + magnitude + " elapsed: " + elapsedTime );
 			//infoText.setText( "" + magnitude );
 
 			//keep audio alive if movment events are detected
@@ -502,11 +491,6 @@ public class MainActivity extends Activity implements SensorEventListener
 			}
 		}
 	}
-	
-	
-	
-	
-	
 
 	//----------------------------------------------------------------------private methods and classes
 
@@ -759,6 +743,84 @@ public class MainActivity extends Activity implements SensorEventListener
 		public void finish()
 		{
 			running = false;
+		}
+	}
+
+	public class SeekListener implements OnTouchListener
+	{
+		private boolean isForward;
+		private boolean seek;
+		private long eventDownTime;
+
+		public SeekListener( boolean forward )
+		{
+			isForward = forward;
+			seek = false;
+			eventDownTime = 0;
+		}
+
+		@Override
+		public boolean onTouch( View v, MotionEvent event )
+		{
+			int action = event.getActionMasked();
+			long time = System.currentTimeMillis();
+
+			switch( action )
+			{
+			case MotionEvent.ACTION_DOWN:
+
+				eventDownTime = time;
+				Log.i( TAG, "" + time );
+				break;
+
+			case MotionEvent.ACTION_MOVE:
+				if( !MediaState.getInstance().isMediaPlaying() ) return false;
+
+				if( time - eventDownTime > 400 )
+				{
+					seek = true;
+					eventDownTime = time;
+					MediaPlayer player = MediaState.getInstance().getCurrentMediaPlayer();
+
+					//determine the next position
+					int pos = player.getCurrentPosition() + ( 5000 * ( isForward ? 1 : -1 ) );
+					int dur = player.getDuration();
+
+					if( pos > dur )
+					{
+						MediaState.getInstance().nextTrack();
+					}
+					else if( pos < 0 )
+					{
+						MediaState.getInstance().previousTrack();
+					}
+					else
+					{
+						player.seekTo( pos );
+					}
+
+					progressBar.setProgress( (int) ( ( player.getCurrentPosition() / player.getDuration() ) * 100 ) );
+				}
+				break;
+
+			case MotionEvent.ACTION_UP:
+				if( !seek )
+				{
+					if( isForward )
+					{
+						MediaState.getInstance().nextTrack();
+					}
+					else
+					{
+						MediaState.getInstance().previousTrack();
+					}
+					eventDownTime = time + 500;
+				}
+				seek = false;
+				break;
+			}
+
+			return true;
 		}
 	}
 }
