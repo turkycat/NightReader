@@ -122,10 +122,11 @@
             style="@android:style/Widget.ProgressBar.Horizontal"
             android:progressDrawable="@drawable/main_progress_bar"
             android:layout_width="match_parent"
-            android:layout_height="10dp"
+            android:layout_height="14dp"
             android:layout_below="@id/MainActivity_MenuText"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="15dp" />
+            android:layout_marginTop="15dp"
+            android:clickable="true" />
         
     </RelativeLayout>
     

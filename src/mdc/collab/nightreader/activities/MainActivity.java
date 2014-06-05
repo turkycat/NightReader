@@ -33,7 +33,9 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -104,9 +106,7 @@ public class MainActivity extends Activity implements SensorEventListener
 	//the state of the sensor
 	private static boolean sensorEnabled;
 	
-//	//the state of the pause button
-//	private static boolean isPaused = false;
-	
+	//a reference to a dialog fragment that is currently displayed on the screen
 	private static DialogFragment dialog;
 
 	//accounts for gravity
@@ -154,7 +154,29 @@ public class MainActivity extends Activity implements SensorEventListener
 
 		//initialize the progress bar
 		progressBar = (ProgressBar) findViewById( R.id.MainActivity_ProgressBar );
-		//progressBar.setProgressDrawable( getResources().getDrawable( R.drawable.main_progress_bar ) );
+		
+		//add seek capability to the progress bar
+		progressBar.setOnTouchListener( new OnTouchListener()
+		{
+			long lastEventTime = 0;
+			
+			@Override
+			public boolean onTouch( View v, MotionEvent event )
+			{
+				if( !MediaState.getInstance().isMediaPlaying() ) return false;
+				if( System.currentTimeMillis() - lastEventTime < 200 ) return false;
+				
+				lastEventTime = System.currentTimeMillis();
+				float x = event.getX();
+				float w = v.getWidth();
+				float p = x / w;
+				MediaPlayer player = MediaState.getInstance().getCurrentMediaPlayer();
+				player.seekTo( (int)( player.getDuration() * p ) );
+				progressBar.setProgress( (int)( p * 100 ) );
+				Log.i( TAG, "x position: " + x + " width: " + w + " per: " + p );
+				return true;
+			}
+		} );
 
 		//begin detecting audio files if not already stored in the application
 		if( !application.isAudioFileListLoaded() )
